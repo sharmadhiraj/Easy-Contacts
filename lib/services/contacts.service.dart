@@ -1,5 +1,5 @@
 import 'package:easy_contacts/models/contact.dart';
-import 'package:easy_contacts/util/constant.dart';
+import 'package:easy_contacts/utils/constant.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:stacked/stacked.dart';
 

@@ -1,7 +1,7 @@
 import 'package:easy_contacts/app/locator.dart';
 import 'package:easy_contacts/models/contact.adapter.dart';
-import 'package:easy_contacts/screens/home.dart';
-import 'package:easy_contacts/util/constant.dart';
+import 'package:easy_contacts/ui/screens/contacts.dart';
+import 'package:easy_contacts/utils/constant.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
@@ -20,15 +20,17 @@ class EasyContactsApp extends StatelessWidget {
     return MaterialApp(
       title: Constant.appName,
       theme: _buildThemeData(),
-      home: const HomeScreen(),
+      home: const ContactsScreen(),
     );
   }
 }
 
 ThemeData _buildThemeData() {
+  //TODO implement dark theme feature
   return ThemeData(
     colorScheme: ColorScheme.fromSeed(
       seedColor: Constant.primaryColor,
+      primary: Constant.primaryColor,
     ),
     useMaterial3: false,
   );
