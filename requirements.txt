@@ -1,0 +1,31 @@
+Make a simple contact app flutter
+
+Requirements:
+	Uses stacked architecture
+	Use GoRouter for routing
+	Use Hive to keep data locally, do not use firestore stack, the app will work on any device without requiring any Firebase Config files.
+	The app should use SOLID principles
+
+
+Thew app should have 2 screens.
+
+Screen 1: Display Contacts.
+	The list of contacts should be init() from Hive.
+	This page should have an add button, which shows a Bottom Sheet Widget. This should be a form to simply add a new contact in Hive, and also shown in Screen 1.
+	The user cannot delete the contact from this screen.
+	The user should be able to search by Full Name
+
+Screen 2:  Contact Details
+	When the user taps on a contact, will be redirected to that specific contact details.
+	The user has the capability to update the contact fields
+	Here the user can delete the contact.
+
+Contact Data Model:
+  First Name
+  Last Name
+  Phone No.
+  Nick Name
+  Email
+  Groups, 1:n relationship
+  Notes
+  Relationship
