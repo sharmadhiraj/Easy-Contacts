@@ -1,4 +1,3 @@
-import 'package:easy_contacts/app/locator.dart';
 import 'package:easy_contacts/models/group.dart';
 import 'package:easy_contacts/utils/common.dart';
 import 'package:easy_contacts/utils/toast.dart';
@@ -6,7 +5,12 @@ import 'package:easy_contacts/view_models/groups.viewmodel.dart';
 import 'package:flutter/material.dart';
 
 class GroupNameInput extends StatefulWidget {
-  const GroupNameInput({super.key});
+  const GroupNameInput({
+    required this.viewModel,
+    super.key,
+  });
+
+  final GroupsViewModel viewModel;
 
   @override
   State<GroupNameInput> createState() => _GroupNameInputState();
@@ -23,31 +27,26 @@ class _GroupNameInputState extends State<GroupNameInput> {
         title: TextField(
           controller: textEditingController,
           decoration: const InputDecoration(labelText: "Create new group"),
-          onSubmitted: (groupName) =>
-              _saveGroup(context, textEditingController),
+          onSubmitted: (groupName) => _saveGroup(),
         ),
         trailing: IconButton(
-          onPressed: () => _saveGroup(context, textEditingController),
-          icon: const Icon(Icons.done),
+          onPressed: () => _saveGroup(),
+          icon: const Icon(Icons.save_outlined),
         ),
       ),
     );
   }
 
-  void _saveGroup(
-    BuildContext context,
-    TextEditingController textEditingController,
-  ) {
+  void _saveGroup() {
     final String groupName = textEditingController.text.trim();
     if (groupName.isEmpty) {
       return;
     }
-    final GroupsViewModel model = locator<GroupsViewModel>();
-    if (model.groupAlreadyExists(groupName)) {
+    if (widget.viewModel.groupAlreadyExists(groupName)) {
       ToastUtil.showError(message: "Group $groupName already exists!");
       return;
     }
-    model.newGroup(
+    widget.viewModel.newGroup(
       Group(
         id: CommonUtil.generateRandomId(),
         name: groupName,

@@ -7,26 +7,21 @@ import 'package:stacked/stacked.dart';
 class GroupsViewModel extends ReactiveViewModel {
   final GroupsService _groupsService = locator<GroupsService>();
 
-  List<String> _selectedIds = [];
+  final List<String> selectedIds;
 
-  List<String> getSelectedIds() => _selectedIds;
-
-  void setSelectedIds(List<String> selectIds) {
-    _selectedIds = selectIds;
-    notifyListeners();
-  }
+  GroupsViewModel({required this.selectedIds});
 
   void toggleSelectedId(String groupId) {
-    if (_selectedIds.contains(groupId)) {
-      _selectedIds.remove(groupId);
+    if (selectedIds.contains(groupId)) {
+      selectedIds.remove(groupId);
     } else {
-      _selectedIds.add(groupId);
+      selectedIds.add(groupId);
     }
     notifyListeners();
   }
 
   bool isSelectedGroup(Group group) {
-    return _selectedIds.contains(group.id);
+    return selectedIds.contains(group.id);
   }
 
   bool groupAlreadyExists(String groupName) {
@@ -36,7 +31,7 @@ class GroupsViewModel extends ReactiveViewModel {
   }
 
   List<Group> getSelectedGroups() {
-    return _groupsService.getGroupByIds(_selectedIds);
+    return _groupsService.getGroupByIds(selectedIds);
   }
 
   List<Group> getGroups() {

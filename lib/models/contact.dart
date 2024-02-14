@@ -1,6 +1,8 @@
 import 'package:easy_contacts/app/locator.dart';
 import 'package:easy_contacts/models/base.dart';
+import 'package:easy_contacts/models/group.dart';
 import 'package:easy_contacts/services/groups.service.dart';
+import 'package:easy_contacts/utils/common.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 class Contact extends BaseModel {
@@ -33,16 +35,17 @@ class Contact extends BaseModel {
     return firstName.isEmpty ? " " : firstName[0].toUpperCase();
   }
 
-  String getGroups() {
-    return locator<GroupsService>()
-        .getGroupByIds(groups)
-        .map((group) => group.name)
-        .join(", ");
+  List<Group> getGroups() {
+    return locator<GroupsService>().getGroupByIds(groups).toList();
+  }
+
+  String getGroupNames() {
+    return CommonUtil.formatGroupNames(getGroups());
   }
 
   factory Contact.empty() {
     return Contact(
-      id: "",
+      id: CommonUtil.generateRandomId(),
       firstName: "",
       lastName: "",
       phoneNo: "",

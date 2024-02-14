@@ -22,7 +22,9 @@ class AppRouter {
       GoRoute(
         name: AppRoute.groups.name,
         path: AppRoute.groups.path,
-        builder: (context, state) => const GroupsScreen(),
+        builder: (context, state) => GroupsScreen(
+          selectedIds: state.extra as List<String>,
+        ),
       ),
     ],
   );

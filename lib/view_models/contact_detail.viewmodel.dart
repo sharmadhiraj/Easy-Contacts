@@ -9,8 +9,8 @@ class ContactDetailViewModel extends ReactiveViewModel {
 
   ContactDetailViewModel(this.id);
 
-  Contact? getContact() {
-    return _contactsService.getById(id);
+  Contact getContact() {
+    return _contactsService.getById(id) ?? Contact.empty();
   }
 
   @override

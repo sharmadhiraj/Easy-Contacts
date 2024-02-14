@@ -1,4 +1,3 @@
-import 'package:easy_contacts/app/locator.dart';
 import 'package:easy_contacts/models/group.dart';
 import 'package:easy_contacts/utils/constant.dart';
 import 'package:easy_contacts/view_models/groups.viewmodel.dart';
@@ -6,11 +5,13 @@ import 'package:flutter/material.dart';
 
 class GroupListTile extends StatelessWidget {
   const GroupListTile({
+    required this.viewModel,
     required this.group,
     required this.selected,
     super.key,
   });
 
+  final GroupsViewModel viewModel;
   final Group group;
   final bool selected;
 
@@ -18,7 +19,7 @@ class GroupListTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       child: ListTile(
-        onTap: () => _handleGroupTap(group.id),
+        onTap: () => viewModel.toggleSelectedId(group.id),
         title: Text(group.name),
         trailing: Icon(
           Icons.check_circle_rounded,
@@ -27,9 +28,5 @@ class GroupListTile extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  void _handleGroupTap(String groupId) {
-    locator<GroupsViewModel>().toggleSelectedId(groupId);
   }
 }

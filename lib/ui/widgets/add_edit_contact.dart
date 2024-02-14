@@ -1,19 +1,16 @@
-import 'package:easy_contacts/app/locator.dart';
+import 'package:easy_contacts/app/route.dart';
 import 'package:easy_contacts/models/contact.dart';
+import 'package:easy_contacts/models/group.dart';
 import 'package:easy_contacts/ui/widgets/group_selector.dart';
-import 'package:easy_contacts/utils/common.dart';
-import 'package:easy_contacts/utils/toast.dart';
-import 'package:easy_contacts/view_models/contacts.viewmodel.dart';
-import 'package:easy_contacts/view_models/groups.viewmodel.dart';
+import 'package:easy_contacts/view_models/contact_add_edit.viewmodel.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:stacked/stacked.dart';
 
-class AddEditContactWidget extends StatefulWidget {
+class AddEditContactWidget extends StatelessWidget {
   const AddEditContactWidget({this.contact, Key? key}) : super(key: key);
 
   final Contact? contact;
-
-  @override
-  State<AddEditContactWidget> createState() => _AddEditContactWidgetState();
 
   static void show({
     required BuildContext context,
@@ -25,150 +22,106 @@ class AddEditContactWidget extends StatefulWidget {
       builder: (BuildContext context) => AddEditContactWidget(contact: contact),
     );
   }
-}
-
-class _AddEditContactWidgetState extends State<AddEditContactWidget> {
-  final TextEditingController _firstNameController = TextEditingController();
-  final TextEditingController _lastNameController = TextEditingController();
-  final TextEditingController _phoneController = TextEditingController();
-  final TextEditingController _nickNameController = TextEditingController();
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _relationshipController = TextEditingController();
-  final TextEditingController _noteController = TextEditingController();
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) => _populateData());
-  }
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Padding(
-        padding: const EdgeInsets.all(20)
-            .copyWith(bottom: MediaQuery.of(context).viewInsets.bottom + 20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const SizedBox(height: 4),
-            Center(
-              child: Text(
-                widget.contact == null ? "Add New Contact" : "Update Contact",
-                style: const TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
+    return ViewModelBuilder<ContactAddEditViewModel>.reactive(
+      viewModelBuilder: () => ContactAddEditViewModel(contact: contact),
+      builder: (context, viewModel, _) {
+        return SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(20).copyWith(
+                bottom: MediaQuery.of(context).viewInsets.bottom + 24),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const SizedBox(height: 4),
+                Center(
+                  child: Text(
+                    viewModel.isUpdate ? "Update Contact" : "Add New Contact",
+                    style: const TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                 ),
-              ),
+                const SizedBox(height: 12),
+                TextFormField(
+                  initialValue: viewModel.contact.firstName,
+                  keyboardType: TextInputType.name,
+                  textCapitalization: TextCapitalization.words,
+                  onChanged: viewModel.setFirstName,
+                  decoration: const InputDecoration(labelText: "First Name"),
+                ),
+                TextFormField(
+                  initialValue: viewModel.contact.lastName,
+                  keyboardType: TextInputType.name,
+                  textCapitalization: TextCapitalization.words,
+                  onChanged: viewModel.setLastName,
+                  decoration: const InputDecoration(labelText: "Last Name"),
+                ),
+                TextFormField(
+                  initialValue: viewModel.contact.phoneNo,
+                  keyboardType: TextInputType.phone,
+                  onChanged: viewModel.setPhoneNo,
+                  decoration: const InputDecoration(labelText: "Phone Number"),
+                ),
+                TextFormField(
+                  initialValue: viewModel.contact.nickName,
+                  keyboardType: TextInputType.name,
+                  textCapitalization: TextCapitalization.words,
+                  onChanged: viewModel.setNickName,
+                  decoration: const InputDecoration(labelText: "Nick Name"),
+                ),
+                TextFormField(
+                  initialValue: viewModel.contact.email,
+                  keyboardType: TextInputType.emailAddress,
+                  onChanged: viewModel.setEmail,
+                  decoration: const InputDecoration(labelText: "Email"),
+                ),
+                GroupSelector(
+                  selectedGroups: viewModel.contact.getGroups(),
+                  onSelectGroups: (List<Group> groups) => viewModel
+                      .setGroups(groups.map((group) => group.id).toList()),
+                ),
+                TextFormField(
+                  initialValue: viewModel.contact.relationship,
+                  keyboardType: TextInputType.text,
+                  textCapitalization: TextCapitalization.words,
+                  onChanged: viewModel.setRelationship,
+                  decoration: const InputDecoration(labelText: "Relationship"),
+                ),
+                TextFormField(
+                  initialValue: viewModel.contact.note,
+                  keyboardType: TextInputType.text,
+                  textCapitalization: TextCapitalization.sentences,
+                  onChanged: viewModel.setNote,
+                  decoration: const InputDecoration(labelText: "Note"),
+                ),
+                const SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: () => _save(context, viewModel),
+                  child: const Text("Save"),
+                ),
+              ],
             ),
-            const SizedBox(height: 12),
-            TextFormField(
-              controller: _firstNameController,
-              keyboardType: TextInputType.name,
-              textCapitalization: TextCapitalization.words,
-              decoration: const InputDecoration(labelText: "First Name"),
-            ),
-            TextFormField(
-              controller: _lastNameController,
-              keyboardType: TextInputType.name,
-              textCapitalization: TextCapitalization.words,
-              decoration: const InputDecoration(labelText: "Last Name"),
-            ),
-            TextFormField(
-              controller: _phoneController,
-              keyboardType: TextInputType.phone,
-              decoration: const InputDecoration(labelText: "Phone Number"),
-            ),
-            TextFormField(
-              controller: _nickNameController,
-              keyboardType: TextInputType.name,
-              textCapitalization: TextCapitalization.words,
-              decoration: const InputDecoration(labelText: "Nick Name"),
-            ),
-            TextFormField(
-              controller: _emailController,
-              keyboardType: TextInputType.emailAddress,
-              decoration: const InputDecoration(labelText: "Email"),
-            ),
-            const GroupSelector(),
-            TextFormField(
-              controller: _relationshipController,
-              keyboardType: TextInputType.text,
-              textCapitalization: TextCapitalization.words,
-              decoration: const InputDecoration(labelText: "Relationship"),
-            ),
-            TextFormField(
-              controller: _noteController,
-              keyboardType: TextInputType.text,
-              textCapitalization: TextCapitalization.sentences,
-              decoration: const InputDecoration(labelText: "Note"),
-            ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () => _saveContact(context),
-              child: const Text("Save"),
-            ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 
-  void _populateData() {
-    locator<GroupsViewModel>().setSelectedIds(widget.contact?.groups ?? []);
-    if (widget.contact == null) return;
-    _firstNameController.text = widget.contact!.firstName;
-    _lastNameController.text = widget.contact!.lastName;
-    _phoneController.text = widget.contact!.phoneNo;
-    _nickNameController.text = widget.contact!.nickName;
-    _emailController.text = widget.contact!.email;
-    _relationshipController.text = widget.contact!.relationship;
-    _noteController.text = widget.contact!.note;
-  }
-
-  void _saveContact(BuildContext context) {
-    if (_validateForm(context)) {
-      final Contact contact = Contact(
-        id: widget.contact?.id ?? CommonUtil.generateRandomId(),
-        firstName: _firstNameController.text,
-        lastName: _lastNameController.text,
-        phoneNo: _phoneController.text,
-        nickName: _nickNameController.text,
-        email: _emailController.text,
-        groups: locator<GroupsViewModel>().getSelectedIds(),
-        note: _noteController.text,
-        relationship: _relationshipController.text,
-      );
-      if (widget.contact == null) {
-        locator<ContactsViewModel>().newContact(contact);
-      } else {
-        locator<ContactsViewModel>().updateContact(contact);
+  void _save(BuildContext context, ContactAddEditViewModel viewModel) {
+    final Contact? contact = viewModel.saveContact();
+    if (contact != null) {
+      Navigator.of(context).pop();
+      if (!viewModel.isUpdate) {
+        context.pushNamed(
+          AppRoute.contactDetail.name,
+          extra: contact.id,
+        );
       }
-      Navigator.pop(context);
     }
-  }
-
-  bool _validateForm(BuildContext context) {
-    if (_firstNameController.text.isEmpty) {
-      ToastUtil.showError(message: "Please provide first name!");
-      return false;
-    } else if (_phoneController.text.isEmpty) {
-      ToastUtil.showError(message: "Please provide phone number!");
-      return false;
-    }
-    return true;
-  }
-
-  @override
-  void dispose() {
-    _firstNameController.dispose();
-    _lastNameController.dispose();
-    _phoneController.dispose();
-    _nickNameController.dispose();
-    _emailController.dispose();
-    _relationshipController.dispose();
-    _noteController.dispose();
-    super.dispose();
   }
 }

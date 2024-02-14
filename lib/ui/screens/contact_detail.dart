@@ -18,8 +18,7 @@ class ContactDetailScreen extends StatelessWidget {
     return ViewModelBuilder<ContactDetailViewModel>.reactive(
       viewModelBuilder: () => ContactDetailViewModel(id),
       builder: (context, model, _) {
-        final Contact? contact = model.getContact();
-        if (contact == null) return Container();
+        final Contact contact = model.getContact();
         return Scaffold(
           appBar: _buildAppBar(context, contact),
           body: _buildBody(contact),
@@ -73,7 +72,7 @@ class ContactDetailScreen extends StatelessWidget {
           ),
           ContactInfoTile(
             label: "Groups",
-            value: contact.getGroups(),
+            value: contact.getGroupNames(),
             icon: Icons.category_outlined,
           ),
           ContactInfoTile(

@@ -1,3 +1,4 @@
+import 'package:easy_contacts/models/group.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:uuid/uuid.dart';
@@ -20,5 +21,9 @@ class CommonUtil {
 
   static void hideKeypad() {
     FocusManager.instance.primaryFocus?.unfocus();
+  }
+
+  static String formatGroupNames(List<Group> groups) {
+    return groups.map((e) => e.name).join(", ");
   }
 }
