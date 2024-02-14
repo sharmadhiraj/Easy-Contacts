@@ -1,6 +1,8 @@
+import 'package:easy_contacts/app/locator.dart';
 import 'package:easy_contacts/app/route.dart';
 import 'package:easy_contacts/models/contact.dart';
 import 'package:easy_contacts/ui/widgets/add_edit_contact.dart';
+import 'package:easy_contacts/ui/widgets/search_input.dart';
 import 'package:easy_contacts/utils/constant.dart';
 import 'package:easy_contacts/view_models/contacts.viewmodel.dart';
 import 'package:flutter/material.dart';
@@ -33,10 +35,10 @@ class ContactsScreen extends StatelessWidget {
 
   Widget _buildBody() {
     return ViewModelBuilder<ContactsViewModel>.reactive(
-      viewModelBuilder: () => ContactsViewModel(),
+      viewModelBuilder: () => locator<ContactsViewModel>(),
       builder: (context, model, _) {
         return model.hasContacts()
-            ? _buildListView(model.getContacts())
+            ? _buildContactsWithSearch(model.getContacts())
             : _buildNoContacts();
       },
     );
@@ -56,10 +58,34 @@ class ContactsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildListView(List<Contact> contacts) {
-    return ListView.builder(
-      itemBuilder: (context, index) => _buildListItem(context, contacts[index]),
-      itemCount: contacts.length,
+  Widget _buildNoResults() {
+    return const Center(
+      child: Padding(
+        padding: EdgeInsets.all(16),
+        child: Text(
+          "Your search returned no contacts.\n"
+          "Please try searching with a different name.",
+          textAlign: TextAlign.center,
+          style: TextStyle(color: Colors.grey),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildContactsWithSearch(List<Contact> contacts) {
+    return Column(
+      children: [
+        const SearchInput(),
+        Expanded(
+          child: contacts.isEmpty
+              ? _buildNoResults()
+              : ListView.builder(
+                  itemBuilder: (context, index) =>
+                      _buildListItem(context, contacts[index]),
+                  itemCount: contacts.length,
+                ),
+        )
+      ],
     );
   }
 

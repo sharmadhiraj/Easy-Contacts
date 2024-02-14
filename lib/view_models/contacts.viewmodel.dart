@@ -6,10 +6,25 @@ import 'package:stacked/stacked.dart';
 class ContactsViewModel extends ReactiveViewModel {
   final ContactsService _contactsService = locator<ContactsService>();
 
+  String _searchQuery = "";
+
   List<Contact> getContacts() {
-    final List<Contact> contacts = _contactsService.contacts;
+    List<Contact> contacts = _contactsService.contacts;
+    if (_searchQuery.trim().isNotEmpty) {
+      contacts = contacts
+          .where((contact) => contact
+              .getFullName()
+              .toLowerCase()
+              .contains(_searchQuery.toLowerCase()))
+          .toList();
+    }
     contacts.sort((a, b) => a.getFullName().compareTo(b.getFullName()));
     return contacts;
+  }
+
+  void setSearchQuery(String searchQuery) {
+    _searchQuery = searchQuery;
+    notifyListeners();
   }
 
   bool hasContacts() => _contactsService.contacts.isNotEmpty;
