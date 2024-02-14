@@ -20,4 +20,12 @@ class Contact {
     required this.note,
     required this.relationship,
   });
+
+  String getFullName() {
+    return "$firstName $lastName".trim();
+  }
+
+  String getAvatar() {
+    return firstName.isEmpty ? " " : firstName[0].toUpperCase();
+  }
 }

@@ -21,7 +21,7 @@ class ContactsService with ListenableServiceMixin {
       .put(Constant.contactsHiveKeyName, _contacts.value);
 
   void newContact(Contact contact) {
-    _contacts.value.insert(0, contact);
+    _contacts.value.add(contact);
     _saveToHive();
     notifyListeners();
   }
