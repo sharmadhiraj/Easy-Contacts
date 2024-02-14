@@ -1,6 +1,6 @@
 import 'package:easy_contacts/app/route.dart';
 import 'package:easy_contacts/models/contact.dart';
-import 'package:easy_contacts/ui/widgets/add_contact.dart';
+import 'package:easy_contacts/ui/widgets/add_edit_contact.dart';
 import 'package:easy_contacts/utils/constant.dart';
 import 'package:easy_contacts/view_models/contacts.viewmodel.dart';
 import 'package:flutter/material.dart';
@@ -25,15 +25,15 @@ class ContactsScreen extends StatelessWidget {
 
   FloatingActionButton _buildFloatingActionButton(BuildContext context) {
     return FloatingActionButton(
-      onPressed: () => AddContactBottomSheet.show(context),
+      onPressed: () => AddEditContactWidget.show(context: context),
       backgroundColor: Constant.primaryColor,
       child: const Icon(Icons.add),
     );
   }
 
   Widget _buildBody() {
-    return ViewModelBuilder<ContactScreenViewModel>.reactive(
-      viewModelBuilder: () => ContactScreenViewModel(),
+    return ViewModelBuilder<ContactsViewModel>.reactive(
+      viewModelBuilder: () => ContactsViewModel(),
       builder: (context, model, _) {
         return model.hasContacts()
             ? _buildListView(model.getContacts())
@@ -48,7 +48,7 @@ class ContactsScreen extends StatelessWidget {
         padding: EdgeInsets.all(16),
         child: Text(
           "You currently have no contacts.\n"
-              "Tap the '+' button in the bottom corner to create a new contact.",
+          "Tap the '+' button in the bottom corner to create a new contact.",
           textAlign: TextAlign.center,
           style: TextStyle(color: Colors.grey),
         ),
@@ -68,7 +68,7 @@ class ContactsScreen extends StatelessWidget {
       child: ListTile(
         onTap: () => context.pushNamed(
           AppRoute.contactDetail.name,
-          extra: contact,
+          extra: contact.id,
         ),
         leading: CircleAvatar(
           backgroundColor: Colors.black12,

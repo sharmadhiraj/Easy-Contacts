@@ -6,5 +6,5 @@ final GetIt locator = GetIt.instance;
 
 void setupLocator() {
   locator.registerLazySingleton(() => ContactsService());
-  locator.registerLazySingleton(() => ContactScreenViewModel());
+  locator.registerLazySingleton(() => ContactsViewModel());
 }

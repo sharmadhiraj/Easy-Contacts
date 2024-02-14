@@ -1,4 +1,3 @@
-import 'package:easy_contacts/models/contact.dart';
 import 'package:easy_contacts/ui/screens/contact_detail.dart';
 import 'package:easy_contacts/ui/screens/contacts.dart';
 import 'package:go_router/go_router.dart';
@@ -16,7 +15,7 @@ class AppRouter {
         name: AppRoute.contactDetail.name,
         path: AppRoute.contactDetail.path,
         builder: (context, state) => ContactDetailScreen(
-          contact: state.extra as Contact,
+          id: state.extra as String,
         ),
       ),
     ],

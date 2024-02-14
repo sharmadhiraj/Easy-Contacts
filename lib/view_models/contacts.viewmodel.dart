@@ -3,7 +3,7 @@ import 'package:easy_contacts/models/contact.dart';
 import 'package:easy_contacts/services/contacts.service.dart';
 import 'package:stacked/stacked.dart';
 
-class ContactScreenViewModel extends ReactiveViewModel {
+class ContactsViewModel extends ReactiveViewModel {
   final ContactsService _contactsService = locator<ContactsService>();
 
   List<Contact> getContacts() {

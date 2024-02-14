@@ -5,22 +5,27 @@ import 'package:easy_contacts/utils/toast.dart';
 import 'package:easy_contacts/view_models/contacts.viewmodel.dart';
 import 'package:flutter/material.dart';
 
-class AddContactBottomSheet extends StatefulWidget {
-  const AddContactBottomSheet({Key? key}) : super(key: key);
+class AddEditContactWidget extends StatefulWidget {
+  const AddEditContactWidget({this.contact, Key? key}) : super(key: key);
+
+  final Contact? contact;
 
   @override
-  State<AddContactBottomSheet> createState() => _AddContactBottomSheetState();
+  State<AddEditContactWidget> createState() => _AddEditContactWidgetState();
 
-  static void show(BuildContext context) {
+  static void show({
+    required BuildContext context,
+    Contact? contact,
+  }) {
     showModalBottomSheet(
       isScrollControlled: true,
       context: context,
-      builder: (BuildContext context) => const AddContactBottomSheet(),
+      builder: (BuildContext context) => AddEditContactWidget(contact: contact),
     );
   }
 }
 
-class _AddContactBottomSheetState extends State<AddContactBottomSheet> {
+class _AddEditContactWidgetState extends State<AddEditContactWidget> {
   final TextEditingController _firstNameController = TextEditingController();
   final TextEditingController _lastNameController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
@@ -30,15 +35,9 @@ class _AddContactBottomSheetState extends State<AddContactBottomSheet> {
   final TextEditingController _relationshipController = TextEditingController();
 
   @override
-  void dispose() {
-    _firstNameController.dispose();
-    _lastNameController.dispose();
-    _phoneController.dispose();
-    _nickNameController.dispose();
-    _emailController.dispose();
-    _noteController.dispose();
-    _relationshipController.dispose();
-    super.dispose();
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _populateData());
   }
 
   @override
@@ -113,21 +112,34 @@ class _AddContactBottomSheetState extends State<AddContactBottomSheet> {
     );
   }
 
+  void _populateData() {
+    if (widget.contact == null) return;
+    _firstNameController.text = widget.contact!.firstName;
+    _lastNameController.text = widget.contact!.lastName;
+    _phoneController.text = widget.contact!.phoneNo;
+    _nickNameController.text = widget.contact!.nickName;
+    _emailController.text = widget.contact!.email;
+    _relationshipController.text = widget.contact!.relationship;
+  }
+
   void _saveContact(BuildContext context) {
     if (_validateForm(context)) {
-      locator<ContactScreenViewModel>().newContact(
-        Contact(
-          id: CommonUtil.generateRandomId(),
-          firstName: _firstNameController.text,
-          lastName: _lastNameController.text,
-          phoneNo: _phoneController.text,
-          nickName: _nickNameController.text,
-          email: _emailController.text,
-          groups: [],
-          note: _noteController.text,
-          relationship: _relationshipController.text,
-        ),
+      final Contact contact = Contact(
+        id: widget.contact?.id ?? CommonUtil.generateRandomId(),
+        firstName: _firstNameController.text,
+        lastName: _lastNameController.text,
+        phoneNo: _phoneController.text,
+        nickName: _nickNameController.text,
+        email: _emailController.text,
+        groups: [],
+        note: _noteController.text,
+        relationship: _relationshipController.text,
       );
+      if (widget.contact == null) {
+        locator<ContactsViewModel>().newContact(contact);
+      } else {
+        locator<ContactsViewModel>().updateContact(contact);
+      }
       Navigator.pop(context);
     }
   }
@@ -141,5 +153,17 @@ class _AddContactBottomSheetState extends State<AddContactBottomSheet> {
       return false;
     }
     return true;
+  }
+
+  @override
+  void dispose() {
+    _firstNameController.dispose();
+    _lastNameController.dispose();
+    _phoneController.dispose();
+    _nickNameController.dispose();
+    _emailController.dispose();
+    _noteController.dispose();
+    _relationshipController.dispose();
+    super.dispose();
   }
 }

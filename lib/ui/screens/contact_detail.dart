@@ -1,49 +1,101 @@
+import 'package:easy_contacts/app/locator.dart';
 import 'package:easy_contacts/models/contact.dart';
+import 'package:easy_contacts/ui/widgets/add_edit_contact.dart';
+import 'package:easy_contacts/utils/common.dart';
+import 'package:easy_contacts/utils/constant.dart';
+import 'package:easy_contacts/utils/toast.dart';
+import 'package:easy_contacts/view_models/contact_detail.viewmodel.dart';
+import 'package:easy_contacts/view_models/contacts.viewmodel.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:stacked/stacked.dart';
 
 class ContactDetailScreen extends StatelessWidget {
-  const ContactDetailScreen({required this.contact, super.key});
+  const ContactDetailScreen({required this.id, super.key});
 
-  final Contact contact;
+  final String id;
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: _buildAppBar(),
-      body: _buildBody(),
+    return ViewModelBuilder<ContactDetailViewModel>.reactive(
+      viewModelBuilder: () => ContactDetailViewModel(id),
+      builder: (context, model, _) {
+        final Contact? contact = model.getContact();
+        if (contact == null) return Container();
+        return Scaffold(
+          appBar: _buildAppBar(context, contact),
+          body: _buildBody(contact),
+        );
+      },
     );
   }
 
-  AppBar _buildAppBar() {
-    return AppBar();
+  AppBar _buildAppBar(BuildContext context, Contact contact) {
+    return AppBar(
+      actions: [
+        IconButton(
+          onPressed: () => CommonUtil.launchPhoneNumber(contact.phoneNo),
+          icon: const Icon(Icons.call_outlined),
+        ),
+        IconButton(
+          onPressed: () => _copyPhoneNumber(contact.phoneNo),
+          icon: const Icon(Icons.copy_outlined),
+        ),
+        IconButton(
+          onPressed: () => _showDeleteContactConfirmation(context, contact),
+          icon: const Icon(Icons.delete_outline_rounded),
+        ),
+        IconButton(
+          onPressed: () => _editContact(context, contact),
+          icon: const Icon(Icons.edit),
+        ),
+      ],
+    );
   }
 
-  Widget _buildBody() {
+  Widget _buildBody(Contact contact) {
     return SingleChildScrollView(
       child: Column(
         children: [
-          _buildHeader(),
-          _buildItem("Phone Number", contact.phoneNo, Icons.phone_outlined),
-          _buildItem("Email", contact.email, Icons.email_outlined),
-          _buildItem("Note", contact.note, Icons.note_outlined),
+          _buildHeader(contact),
           _buildItem(
-              "Relationship", contact.relationship, Icons.group_outlined),
+            "Phone Number",
+            contact.phoneNo,
+            Icons.phone_outlined,
+          ),
+          _buildItem(
+            "Email",
+            contact.email,
+            Icons.email_outlined,
+          ),
+          _buildItem(
+            "Note",
+            contact.note,
+            Icons.note_outlined,
+          ),
+          _buildItem(
+            "Relationship",
+            contact.relationship,
+            Icons.group_outlined,
+          ),
         ],
       ),
     );
   }
 
-  Widget _buildHeader() {
+  Widget _buildHeader(Contact contact) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 24, 16, 8),
+      padding: const EdgeInsets.fromLTRB(16, 24, 16, 4),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
+          _buildAvatar(contact),
+          const SizedBox(height: 8),
           Text(
             contact.getFullName(),
             style: const TextStyle(
-              fontSize: 22,
+              fontSize: 20,
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -56,6 +108,21 @@ class ContactDetailScreen extends StatelessWidget {
               ),
             )
         ],
+      ),
+    );
+  }
+
+  Widget _buildAvatar(Contact contact) {
+    return CircleAvatar(
+      radius: 32,
+      backgroundColor: Constant.primaryColor,
+      child: Text(
+        contact.getAvatar(),
+        style: const TextStyle(
+          fontSize: 24,
+          color: Colors.white,
+          fontWeight: FontWeight.bold,
+        ),
       ),
     );
   }
@@ -82,6 +149,56 @@ class ContactDetailScreen extends StatelessWidget {
         value,
         style: const TextStyle(fontSize: 16, color: Colors.black),
       ),
+    );
+  }
+
+  void _copyPhoneNumber(String phoneNo) {
+    Clipboard.setData(ClipboardData(text: phoneNo));
+    ToastUtil.showInfo(message: "Phone number copied to clipboard.");
+  }
+
+  void _editContact(BuildContext context, Contact contact) {
+    AddEditContactWidget.show(
+      context: context,
+      contact: contact,
+    );
+  }
+
+  void _showDeleteContactConfirmation(BuildContext context, Contact contact) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Delete ${contact.firstName}?"),
+          content:
+              Text("Are you sure you want to delete ${contact.firstName}?"),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text(
+                "Cancel",
+                style: TextStyle(color: Colors.grey),
+              ),
+            ),
+            TextButton(
+              onPressed: () => _deleteContact(context, contact),
+              child: const Text(
+                "Delete",
+                style: TextStyle(color: Colors.red),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _deleteContact(BuildContext context, Contact contact) {
+    locator<ContactsViewModel>().removeContact(contact.id);
+    Navigator.of(context).pop();
+    Navigator.of(context).pop();
+    ToastUtil.showInfo(
+      message: "Contact ${contact.firstName} deleted successfully.",
     );
   }
 }

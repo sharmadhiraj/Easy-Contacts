@@ -3,6 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 class ToastUtil {
+  static void showInfo({required String message}) {
+    _show(message: message);
+  }
+
   static void showError({required String message}) {
     _show(
       message: message,

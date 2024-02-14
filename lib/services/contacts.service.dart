@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:easy_contacts/models/contact.dart';
 import 'package:easy_contacts/utils/constant.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -49,5 +50,9 @@ class ContactsService with ListenableServiceMixin {
     } else {
       return false;
     }
+  }
+
+  Contact? getById(String id) {
+    return _contacts.value.firstWhereOrNull((contact) => contact.id == id);
   }
 }
