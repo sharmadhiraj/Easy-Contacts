@@ -7,5 +7,5 @@ Future<void> initHive() async {
   await Hive.initFlutter();
   Hive.registerAdapter(ContactAdapter());
   Hive.registerAdapter(GroupAdapter());
-  await Hive.openBox(Constant.contactsHiveBoxName);
+  await Hive.openBox(Constant.hiveBoxName);
 }

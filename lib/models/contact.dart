@@ -1,7 +1,9 @@
+import 'package:easy_contacts/app/locator.dart';
+import 'package:easy_contacts/models/base.dart';
+import 'package:easy_contacts/services/groups.service.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
-class Contact {
-  final String id;
+class Contact extends BaseModel {
   String firstName;
   String lastName;
   String phoneNo;
@@ -12,7 +14,7 @@ class Contact {
   String relationship;
 
   Contact({
-    required this.id,
+    required super.id,
     required this.firstName,
     required this.lastName,
     required this.phoneNo,
@@ -29,6 +31,27 @@ class Contact {
 
   String getAvatar() {
     return firstName.isEmpty ? " " : firstName[0].toUpperCase();
+  }
+
+  String getGroups() {
+    return locator<GroupsService>()
+        .getGroupByIds(groups)
+        .map((group) => group.name)
+        .join(", ");
+  }
+
+  factory Contact.empty() {
+    return Contact(
+      id: "",
+      firstName: "",
+      lastName: "",
+      phoneNo: "",
+      nickName: "",
+      email: "",
+      groups: [],
+      note: "",
+      relationship: "",
+    );
   }
 }
 

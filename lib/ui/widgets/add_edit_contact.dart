@@ -1,13 +1,11 @@
 import 'package:easy_contacts/app/locator.dart';
-import 'package:easy_contacts/app/route.dart';
 import 'package:easy_contacts/models/contact.dart';
+import 'package:easy_contacts/ui/widgets/group_selector.dart';
 import 'package:easy_contacts/utils/common.dart';
 import 'package:easy_contacts/utils/toast.dart';
 import 'package:easy_contacts/view_models/contacts.viewmodel.dart';
 import 'package:easy_contacts/view_models/groups.viewmodel.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-import 'package:stacked/stacked.dart';
 
 class AddEditContactWidget extends StatefulWidget {
   const AddEditContactWidget({this.contact, Key? key}) : super(key: key);
@@ -93,7 +91,7 @@ class _AddEditContactWidgetState extends State<AddEditContactWidget> {
               keyboardType: TextInputType.emailAddress,
               decoration: const InputDecoration(labelText: "Email"),
             ),
-            _buildGroupSelector(),
+            const GroupSelector(),
             TextFormField(
               controller: _relationshipController,
               keyboardType: TextInputType.text,
@@ -114,44 +112,6 @@ class _AddEditContactWidgetState extends State<AddEditContactWidget> {
           ],
         ),
       ),
-    );
-  }
-
-  Widget _buildGroupSelector() {
-    return ViewModelBuilder<GroupsViewModel>.reactive(
-      viewModelBuilder: () => locator<GroupsViewModel>(),
-      disposeViewModel: false,
-      builder: (context, model, _) {
-        return GestureDetector(
-          onTap: () => context.pushNamed(AppRoute.groups.name),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              const SizedBox(height: 16),
-              const Text(
-                "Groups",
-                style: TextStyle(
-                  color: Colors.black54,
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 4),
-                child: Text(
-                  model
-                      .getSelectedGroups()
-                      .map((group) => group.name)
-                      .join(", "),
-                  style: const TextStyle(fontSize: 16),
-                ),
-              ),
-              const Divider(
-                thickness: 2,
-                color: Colors.black26,
-              ),
-            ],
-          ),
-        );
-      },
     );
   }
 

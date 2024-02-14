@@ -1,11 +1,11 @@
+import 'package:easy_contacts/models/base.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
-class Group {
-  final String id;
-  String name;
+class Group extends BaseModel {
+  final String name;
 
   Group({
-    required this.id,
+    required super.id,
     required this.name,
   });
 }

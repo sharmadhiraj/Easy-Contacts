@@ -30,7 +30,7 @@ class GroupsViewModel extends ReactiveViewModel {
   }
 
   bool groupAlreadyExists(String groupName) {
-    return _groupsService.groups
+    return _groupsService.items
             .firstWhereOrNull((group) => group.name == groupName) !=
         null;
   }
@@ -40,17 +40,17 @@ class GroupsViewModel extends ReactiveViewModel {
   }
 
   List<Group> getGroups() {
-    final List<Group> groups = _groupsService.groups;
+    final List<Group> groups = _groupsService.items;
     groups.sort((a, b) => a.name.compareTo(b.name));
     return groups;
   }
 
   bool hasGroups() {
-    return _groupsService.groups.isNotEmpty;
+    return _groupsService.items.isNotEmpty;
   }
 
   void newGroup(Group group) {
-    _groupsService.newGroup(group);
+    _groupsService.addItem(group);
     toggleSelectedId(group.id);
   }
 

@@ -1,14 +1,11 @@
-import 'package:easy_contacts/app/locator.dart';
 import 'package:easy_contacts/models/contact.dart';
-import 'package:easy_contacts/services/groups.service.dart';
-import 'package:easy_contacts/ui/widgets/add_edit_contact.dart';
+import 'package:easy_contacts/services/contact_actions.dart';
+import 'package:easy_contacts/ui/widgets/contact_info_tile.dart';
+import 'package:easy_contacts/ui/widgets/delete_contact_confirmation.dart';
 import 'package:easy_contacts/utils/common.dart';
 import 'package:easy_contacts/utils/constant.dart';
-import 'package:easy_contacts/utils/toast.dart';
 import 'package:easy_contacts/view_models/contact_detail.viewmodel.dart';
-import 'package:easy_contacts/view_models/contacts.viewmodel.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:stacked/stacked.dart';
 
 class ContactDetailScreen extends StatelessWidget {
@@ -33,25 +30,30 @@ class ContactDetailScreen extends StatelessWidget {
 
   AppBar _buildAppBar(BuildContext context, Contact contact) {
     return AppBar(
-      actions: [
-        IconButton(
-          onPressed: () => CommonUtil.launchPhoneNumber(contact.phoneNo),
-          icon: const Icon(Icons.call_outlined),
-        ),
-        IconButton(
-          onPressed: () => _copyPhoneNumber(contact.phoneNo),
-          icon: const Icon(Icons.copy_outlined),
-        ),
-        IconButton(
-          onPressed: () => _showDeleteContactConfirmation(context, contact),
-          icon: const Icon(Icons.delete_outline_rounded),
-        ),
-        IconButton(
-          onPressed: () => _editContact(context, contact),
-          icon: const Icon(Icons.edit),
-        ),
-      ],
+      actions: _buildActionButtons(context, contact),
     );
+  }
+
+  List<Widget> _buildActionButtons(BuildContext context, Contact contact) {
+    return [
+      IconButton(
+        onPressed: () => CommonUtil.launchPhoneNumber(contact.phoneNo),
+        icon: const Icon(Icons.call_outlined),
+      ),
+      IconButton(
+        onPressed: () => ContactActions.copyPhoneNumber(contact.phoneNo),
+        icon: const Icon(Icons.copy_outlined),
+      ),
+      IconButton(
+        onPressed: () => DeleteContactConfirmationDialog.show(
+            context: context, contact: contact),
+        icon: const Icon(Icons.delete_outline_rounded),
+      ),
+      IconButton(
+        onPressed: () => ContactActions.editContact(context, contact),
+        icon: const Icon(Icons.edit),
+      ),
+    ];
   }
 
   Widget _buildBody(Contact contact) {
@@ -59,33 +61,30 @@ class ContactDetailScreen extends StatelessWidget {
       child: Column(
         children: [
           _buildHeader(contact),
-          _buildItem(
-            "Phone Number",
-            contact.phoneNo,
-            Icons.phone_outlined,
+          ContactInfoTile(
+            label: "Phone Number",
+            value: contact.phoneNo,
+            icon: Icons.phone_outlined,
           ),
-          _buildItem(
-            "Email",
-            contact.email,
-            Icons.email_outlined,
+          ContactInfoTile(
+            label: "Email",
+            value: contact.email,
+            icon: Icons.email_outlined,
           ),
-          _buildItem(
-            "Groups",
-            locator<GroupsService>()
-                .getGroupByIds(contact.groups)
-                .map((group) => group.name)
-                .join(", "),
-            Icons.category_outlined,
+          ContactInfoTile(
+            label: "Groups",
+            value: contact.getGroups(),
+            icon: Icons.category_outlined,
           ),
-          _buildItem(
-            "Relationship",
-            contact.relationship,
-            Icons.group_outlined,
+          ContactInfoTile(
+            label: "Relationship",
+            value: contact.relationship,
+            icon: Icons.group_outlined,
           ),
-          _buildItem(
-            "Note",
-            contact.note,
-            Icons.note_outlined,
+          ContactInfoTile(
+            label: "Note",
+            value: contact.note,
+            icon: Icons.note_outlined,
           ),
         ],
       ),
@@ -133,81 +132,6 @@ class ContactDetailScreen extends StatelessWidget {
           fontWeight: FontWeight.bold,
         ),
       ),
-    );
-  }
-
-  Widget _buildItem(
-    String label,
-    String value,
-    IconData icon,
-  ) {
-    if (value.trim().isEmpty) return const SizedBox.shrink();
-    return ListTile(
-      leading: CircleAvatar(
-        backgroundColor: Colors.transparent,
-        child: Icon(
-          icon,
-          color: Colors.black54,
-        ),
-      ),
-      title: Text(
-        label,
-        style: const TextStyle(fontSize: 12, color: Colors.grey),
-      ),
-      subtitle: Text(
-        value,
-        style: const TextStyle(fontSize: 16, color: Colors.black),
-      ),
-    );
-  }
-
-  void _copyPhoneNumber(String phoneNo) {
-    Clipboard.setData(ClipboardData(text: phoneNo));
-    ToastUtil.showInfo(message: "Phone number copied to clipboard.");
-  }
-
-  void _editContact(BuildContext context, Contact contact) {
-    AddEditContactWidget.show(
-      context: context,
-      contact: contact,
-    );
-  }
-
-  void _showDeleteContactConfirmation(BuildContext context, Contact contact) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text("Delete ${contact.firstName}?"),
-          content:
-              Text("Are you sure you want to delete ${contact.firstName}?"),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: const Text(
-                "Cancel",
-                style: TextStyle(color: Colors.grey),
-              ),
-            ),
-            TextButton(
-              onPressed: () => _deleteContact(context, contact),
-              child: const Text(
-                "Delete",
-                style: TextStyle(color: Colors.red),
-              ),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  void _deleteContact(BuildContext context, Contact contact) {
-    locator<ContactsViewModel>().removeContact(contact.id);
-    Navigator.of(context).pop();
-    Navigator.of(context).pop();
-    ToastUtil.showInfo(
-      message: "Contact ${contact.firstName} deleted successfully.",
     );
   }
 }

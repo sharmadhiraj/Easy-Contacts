@@ -1,13 +1,12 @@
 import 'package:easy_contacts/app/locator.dart';
-import 'package:easy_contacts/app/route.dart';
 import 'package:easy_contacts/models/contact.dart';
 import 'package:easy_contacts/ui/widgets/add_edit_contact.dart';
+import 'package:easy_contacts/ui/widgets/contact_list_tile.dart';
 import 'package:easy_contacts/ui/widgets/empty_list_label.dart';
 import 'package:easy_contacts/ui/widgets/search_input.dart';
 import 'package:easy_contacts/utils/constant.dart';
 import 'package:easy_contacts/view_models/contacts.viewmodel.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:stacked/stacked.dart';
 
 class ContactsScreen extends StatelessWidget {
@@ -64,52 +63,18 @@ class ContactsScreen extends StatelessWidget {
       children: [
         const SearchInput(),
         Expanded(
-          child: contacts.isEmpty
-              ? _buildNoResults()
-              : ListView.builder(
-                  itemBuilder: (context, index) =>
-                      _buildListItem(context, contacts[index]),
-                  itemCount: contacts.length,
-                ),
+          child:
+              contacts.isEmpty ? _buildNoResults() : _buildListView(contacts),
         )
       ],
     );
   }
 
-  Widget _buildListItem(BuildContext context, Contact contact) {
-    return Card(
-      child: ListTile(
-        onTap: () => context.pushNamed(
-          AppRoute.contactDetail.name,
-          extra: contact.id,
-        ),
-        leading: CircleAvatar(
-          backgroundColor: Colors.black12,
-          child: Text(
-            contact.getAvatar(),
-            style: const TextStyle(
-              fontSize: 16,
-              color: Constant.primaryColor,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ),
-        title: Text(
-          contact.getFullName(),
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-        ),
-        subtitle: Text(
-          contact.phoneNo,
-          style: const TextStyle(fontWeight: FontWeight.bold),
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-        ),
-        trailing: const Icon(
-          Icons.chevron_right_rounded,
-          color: Constant.primaryColor,
-        ),
-      ),
+  Widget _buildListView(List<Contact> contacts) {
+    return ListView.builder(
+      itemBuilder: (context, index) =>
+          ContactListTile(contact: contacts[index]),
+      itemCount: contacts.length,
     );
   }
 }

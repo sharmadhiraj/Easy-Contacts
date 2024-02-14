@@ -9,7 +9,7 @@ class ContactsViewModel extends ReactiveViewModel {
   String _searchQuery = "";
 
   List<Contact> getContacts() {
-    List<Contact> contacts = _contactsService.contacts;
+    List<Contact> contacts = _contactsService.items;
     if (_searchQuery.trim().isNotEmpty) {
       contacts = contacts
           .where((contact) => contact
@@ -27,18 +27,18 @@ class ContactsViewModel extends ReactiveViewModel {
     notifyListeners();
   }
 
-  bool hasContacts() => _contactsService.contacts.isNotEmpty;
+  bool hasContacts() => _contactsService.items.isNotEmpty;
 
   void newContact(Contact contact) {
-    _contactsService.newContact(contact);
+    _contactsService.addItem(contact);
   }
 
   bool removeContact(String id) {
-    return _contactsService.removeContact(id);
+    return _contactsService.removeItem(id);
   }
 
   bool updateContact(Contact updatedContact) {
-    return _contactsService.updateContact(updatedContact);
+    return _contactsService.updateItem(updatedContact);
   }
 
   @override
