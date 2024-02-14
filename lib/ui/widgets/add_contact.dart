@@ -2,7 +2,7 @@ import 'package:easy_contacts/app/locator.dart';
 import 'package:easy_contacts/models/contact.dart';
 import 'package:easy_contacts/utils/common.dart';
 import 'package:easy_contacts/utils/toast.dart';
-import 'package:easy_contacts/viewmodels/contacts_viewmodel.dart';
+import 'package:easy_contacts/view_models/contacts.viewmodel.dart';
 import 'package:flutter/material.dart';
 
 class AddContactBottomSheet extends StatefulWidget {

@@ -1,8 +1,10 @@
+import 'package:easy_contacts/app/route.dart';
 import 'package:easy_contacts/models/contact.dart';
 import 'package:easy_contacts/ui/widgets/add_contact.dart';
 import 'package:easy_contacts/utils/constant.dart';
-import 'package:easy_contacts/viewmodels/contacts_viewmodel.dart';
+import 'package:easy_contacts/view_models/contacts.viewmodel.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:stacked/stacked.dart';
 
 class ContactsScreen extends StatelessWidget {
@@ -46,7 +48,7 @@ class ContactsScreen extends StatelessWidget {
         padding: EdgeInsets.all(16),
         child: Text(
           "You currently have no contacts.\n"
-          "Tap the '+' button in the bottom corner to create a new contact.",
+              "Tap the '+' button in the bottom corner to create a new contact.",
           textAlign: TextAlign.center,
           style: TextStyle(color: Colors.grey),
         ),
@@ -56,31 +58,39 @@ class ContactsScreen extends StatelessWidget {
 
   Widget _buildListView(List<Contact> contacts) {
     return ListView.builder(
-      itemBuilder: (context, index) {
-        return _buildListItem(contacts[index]);
-      },
+      itemBuilder: (context, index) => _buildListItem(context, contacts[index]),
       itemCount: contacts.length,
     );
   }
 
-  Widget _buildListItem(Contact contact) {
+  Widget _buildListItem(BuildContext context, Contact contact) {
     return Card(
       child: ListTile(
+        onTap: () => context.pushNamed(
+          AppRoute.contactDetail.name,
+          extra: contact,
+        ),
         leading: CircleAvatar(
-          backgroundColor: Colors.black54,
+          backgroundColor: Colors.black12,
           child: Text(
             contact.getAvatar(),
             style: const TextStyle(
               fontSize: 16,
-              color: Colors.white,
+              color: Constant.primaryColor,
               fontWeight: FontWeight.bold,
             ),
           ),
         ),
-        title: Text(contact.getFullName()),
+        title: Text(
+          contact.getFullName(),
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        ),
         subtitle: Text(
           contact.phoneNo,
           style: const TextStyle(fontWeight: FontWeight.bold),
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
         ),
         trailing: const Icon(
           Icons.chevron_right_rounded,
