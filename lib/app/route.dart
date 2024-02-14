@@ -1,5 +1,6 @@
 import 'package:easy_contacts/ui/screens/contact_detail.dart';
 import 'package:easy_contacts/ui/screens/contacts.dart';
+import 'package:easy_contacts/ui/screens/groups.dart';
 import 'package:go_router/go_router.dart';
 
 class AppRouter {
@@ -18,6 +19,11 @@ class AppRouter {
           id: state.extra as String,
         ),
       ),
+      GoRoute(
+        name: AppRoute.groups.name,
+        path: AppRoute.groups.path,
+        builder: (context, state) => const GroupsScreen(),
+      ),
     ],
   );
 
@@ -32,6 +38,10 @@ enum AppRoute {
   contactDetail(
     name: "contact_detail",
     path: "/contact_detail",
+  ),
+  groups(
+    name: "groups",
+    path: "/groups",
   );
 
   const AppRoute({required this.name, required this.path});

@@ -2,6 +2,7 @@ import 'package:easy_contacts/app/locator.dart';
 import 'package:easy_contacts/app/route.dart';
 import 'package:easy_contacts/models/contact.dart';
 import 'package:easy_contacts/ui/widgets/add_edit_contact.dart';
+import 'package:easy_contacts/ui/widgets/empty_list_label.dart';
 import 'package:easy_contacts/ui/widgets/search_input.dart';
 import 'package:easy_contacts/utils/constant.dart';
 import 'package:easy_contacts/view_models/contacts.viewmodel.dart';
@@ -45,30 +46,16 @@ class ContactsScreen extends StatelessWidget {
   }
 
   Widget _buildNoContacts() {
-    return const Center(
-      child: Padding(
-        padding: EdgeInsets.all(16),
-        child: Text(
-          "You currently have no contacts.\n"
+    return const EmptyListLabel(
+      message: "You currently have no contacts.\n"
           "Tap the '+' button in the bottom corner to create a new contact.",
-          textAlign: TextAlign.center,
-          style: TextStyle(color: Colors.grey),
-        ),
-      ),
     );
   }
 
   Widget _buildNoResults() {
-    return const Center(
-      child: Padding(
-        padding: EdgeInsets.all(16),
-        child: Text(
-          "Your search returned no contacts.\n"
+    return const EmptyListLabel(
+      message: "Your search returned no contacts.\n"
           "Please try searching with a different name.",
-          textAlign: TextAlign.center,
-          style: TextStyle(color: Colors.grey),
-        ),
-      ),
     );
   }
 

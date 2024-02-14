@@ -1,9 +1,13 @@
 import 'package:easy_contacts/app/locator.dart';
+import 'package:easy_contacts/app/route.dart';
 import 'package:easy_contacts/models/contact.dart';
 import 'package:easy_contacts/utils/common.dart';
 import 'package:easy_contacts/utils/toast.dart';
 import 'package:easy_contacts/view_models/contacts.viewmodel.dart';
+import 'package:easy_contacts/view_models/groups.viewmodel.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:stacked/stacked.dart';
 
 class AddEditContactWidget extends StatefulWidget {
   const AddEditContactWidget({this.contact, Key? key}) : super(key: key);
@@ -31,8 +35,8 @@ class _AddEditContactWidgetState extends State<AddEditContactWidget> {
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _nickNameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _noteController = TextEditingController();
   final TextEditingController _relationshipController = TextEditingController();
+  final TextEditingController _noteController = TextEditingController();
 
   @override
   void initState() {
@@ -50,17 +54,17 @@ class _AddEditContactWidgetState extends State<AddEditContactWidget> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           mainAxisSize: MainAxisSize.min,
           children: [
-            const SizedBox(height: 8),
-            const Center(
+            const SizedBox(height: 4),
+            Center(
               child: Text(
-                "Add New Contact",
-                style: TextStyle(
+                widget.contact == null ? "Add New Contact" : "Update Contact",
+                style: const TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
                 ),
               ),
             ),
-            const Divider(),
+            const SizedBox(height: 12),
             TextFormField(
               controller: _firstNameController,
               keyboardType: TextInputType.name,
@@ -89,17 +93,18 @@ class _AddEditContactWidgetState extends State<AddEditContactWidget> {
               keyboardType: TextInputType.emailAddress,
               decoration: const InputDecoration(labelText: "Email"),
             ),
-            TextFormField(
-              controller: _noteController,
-              keyboardType: TextInputType.text,
-              textCapitalization: TextCapitalization.sentences,
-              decoration: const InputDecoration(labelText: "Note"),
-            ),
+            _buildGroupSelector(),
             TextFormField(
               controller: _relationshipController,
               keyboardType: TextInputType.text,
               textCapitalization: TextCapitalization.words,
               decoration: const InputDecoration(labelText: "Relationship"),
+            ),
+            TextFormField(
+              controller: _noteController,
+              keyboardType: TextInputType.text,
+              textCapitalization: TextCapitalization.sentences,
+              decoration: const InputDecoration(labelText: "Note"),
             ),
             const SizedBox(height: 20),
             ElevatedButton(
@@ -112,7 +117,46 @@ class _AddEditContactWidgetState extends State<AddEditContactWidget> {
     );
   }
 
+  Widget _buildGroupSelector() {
+    return ViewModelBuilder<GroupsViewModel>.reactive(
+      viewModelBuilder: () => locator<GroupsViewModel>(),
+      disposeViewModel: false,
+      builder: (context, model, _) {
+        return GestureDetector(
+          onTap: () => context.pushNamed(AppRoute.groups.name),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              const SizedBox(height: 16),
+              const Text(
+                "Groups",
+                style: TextStyle(
+                  color: Colors.black54,
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 4),
+                child: Text(
+                  model
+                      .getSelectedGroups()
+                      .map((group) => group.name)
+                      .join(", "),
+                  style: const TextStyle(fontSize: 16),
+                ),
+              ),
+              const Divider(
+                thickness: 2,
+                color: Colors.black26,
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
   void _populateData() {
+    locator<GroupsViewModel>().setSelectedIds(widget.contact?.groups ?? []);
     if (widget.contact == null) return;
     _firstNameController.text = widget.contact!.firstName;
     _lastNameController.text = widget.contact!.lastName;
@@ -120,6 +164,7 @@ class _AddEditContactWidgetState extends State<AddEditContactWidget> {
     _nickNameController.text = widget.contact!.nickName;
     _emailController.text = widget.contact!.email;
     _relationshipController.text = widget.contact!.relationship;
+    _noteController.text = widget.contact!.note;
   }
 
   void _saveContact(BuildContext context) {
@@ -131,7 +176,7 @@ class _AddEditContactWidgetState extends State<AddEditContactWidget> {
         phoneNo: _phoneController.text,
         nickName: _nickNameController.text,
         email: _emailController.text,
-        groups: [],
+        groups: locator<GroupsViewModel>().getSelectedIds(),
         note: _noteController.text,
         relationship: _relationshipController.text,
       );
@@ -162,8 +207,8 @@ class _AddEditContactWidgetState extends State<AddEditContactWidget> {
     _phoneController.dispose();
     _nickNameController.dispose();
     _emailController.dispose();
-    _noteController.dispose();
     _relationshipController.dispose();
+    _noteController.dispose();
     super.dispose();
   }
 }

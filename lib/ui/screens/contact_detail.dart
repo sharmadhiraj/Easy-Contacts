@@ -1,5 +1,6 @@
 import 'package:easy_contacts/app/locator.dart';
 import 'package:easy_contacts/models/contact.dart';
+import 'package:easy_contacts/services/groups.service.dart';
 import 'package:easy_contacts/ui/widgets/add_edit_contact.dart';
 import 'package:easy_contacts/utils/common.dart';
 import 'package:easy_contacts/utils/constant.dart';
@@ -69,14 +70,22 @@ class ContactDetailScreen extends StatelessWidget {
             Icons.email_outlined,
           ),
           _buildItem(
-            "Note",
-            contact.note,
-            Icons.note_outlined,
+            "Groups",
+            locator<GroupsService>()
+                .getGroupByIds(contact.groups)
+                .map((group) => group.name)
+                .join(", "),
+            Icons.category_outlined,
           ),
           _buildItem(
             "Relationship",
             contact.relationship,
             Icons.group_outlined,
+          ),
+          _buildItem(
+            "Note",
+            contact.note,
+            Icons.note_outlined,
           ),
         ],
       ),

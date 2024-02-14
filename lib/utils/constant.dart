@@ -5,4 +5,5 @@ class Constant {
   static const Color primaryColor = Colors.teal;
   static const String contactsHiveBoxName = "contacts";
   static const String contactsHiveKeyName = "contacts";
+  static const String groupsHiveKeyName = "groups";
 }

@@ -17,4 +17,8 @@ class CommonUtil {
       debugPrint("Exception while launching url: $e");
     }
   }
+
+  static void hideKeypad() {
+    FocusManager.instance.primaryFocus?.unfocus();
+  }
 }
