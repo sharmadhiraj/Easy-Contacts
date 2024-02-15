@@ -2,6 +2,8 @@ import 'package:easy_contacts/models/group.dart';
 import 'package:easy_contacts/ui/widgets/empty_list_label.dart';
 import 'package:easy_contacts/ui/widgets/group_list_tile.dart';
 import 'package:easy_contacts/ui/widgets/group_name_input.dart';
+import 'package:easy_contacts/utils/common.dart';
+import 'package:easy_contacts/utils/toast.dart';
 import 'package:easy_contacts/view_models/groups.viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:stacked/stacked.dart';
@@ -22,7 +24,9 @@ class GroupsScreen extends StatelessWidget {
         return Scaffold(
           appBar: _buildAppBar(context, viewModel.getSelectedGroups()),
           body: _buildBody(viewModel),
-          bottomSheet: GroupNameInput(viewModel: viewModel),
+          bottomSheet: GroupNameInput(
+            onSaveGroup: (String groupName) => _saveGroup(viewModel, groupName),
+          ),
         );
       },
     );
@@ -56,13 +60,25 @@ class GroupsScreen extends StatelessWidget {
     return ListView.builder(
       padding: const EdgeInsets.only(bottom: 96),
       itemBuilder: (context, index) => GroupListTile(
-        viewModel: viewModel,
         group: groups[index],
-        selected: viewModel.isSelectedGroup(
-          groups[index],
-        ),
+        onSelectGroup: (String id) => viewModel.toggleSelectedId(id),
+        selected: viewModel.isSelectedGroup(groups[index]),
       ),
       itemCount: groups.length,
     );
+  }
+
+  bool _saveGroup(GroupsViewModel viewModel, String groupName) {
+    if (viewModel.groupAlreadyExists(groupName)) {
+      ToastUtil.showError(message: "Group $groupName already exists!");
+      return false;
+    }
+    viewModel.newGroup(
+      Group(
+        id: CommonUtil.generateRandomId(),
+        name: groupName,
+      ),
+    );
+    return true;
   }
 }

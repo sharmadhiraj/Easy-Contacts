@@ -1,4 +1,5 @@
 import 'package:easy_contacts/app/locator.dart';
+import 'package:easy_contacts/utils/common.dart';
 import 'package:easy_contacts/view_models/contacts.viewmodel.dart';
 import 'package:flutter/material.dart';
 
@@ -46,7 +47,10 @@ class _SearchInputState extends State<SearchInput> {
           contentPadding: const EdgeInsets.all(16),
           suffixIcon: IconButton(
             icon: Icon(_searchQuery.isEmpty ? Icons.search : Icons.clear),
-            onPressed: () => _textEditingController.clear(),
+            onPressed: () {
+              _textEditingController.clear();
+              CommonUtil.hideKeypad();
+            },
           ),
           hintStyle: const TextStyle(color: Colors.grey),
         ),

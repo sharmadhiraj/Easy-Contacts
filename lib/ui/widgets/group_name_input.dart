@@ -1,16 +1,13 @@
-import 'package:easy_contacts/models/group.dart';
 import 'package:easy_contacts/utils/common.dart';
-import 'package:easy_contacts/utils/toast.dart';
-import 'package:easy_contacts/view_models/groups.viewmodel.dart';
 import 'package:flutter/material.dart';
 
 class GroupNameInput extends StatefulWidget {
   const GroupNameInput({
-    required this.viewModel,
+    required this.onSaveGroup,
     super.key,
   });
 
-  final GroupsViewModel viewModel;
+  final bool Function(String name) onSaveGroup;
 
   @override
   State<GroupNameInput> createState() => _GroupNameInputState();
@@ -42,17 +39,10 @@ class _GroupNameInputState extends State<GroupNameInput> {
     if (groupName.isEmpty) {
       return;
     }
-    if (widget.viewModel.groupAlreadyExists(groupName)) {
-      ToastUtil.showError(message: "Group $groupName already exists!");
-      return;
+    final bool saved = widget.onSaveGroup(groupName);
+    if (saved) {
+      textEditingController.clear();
+      CommonUtil.hideKeypad();
     }
-    widget.viewModel.newGroup(
-      Group(
-        id: CommonUtil.generateRandomId(),
-        name: groupName,
-      ),
-    );
-    textEditingController.clear();
-    CommonUtil.hideKeypad();
   }
 }
