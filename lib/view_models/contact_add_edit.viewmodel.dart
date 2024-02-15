@@ -1,12 +1,13 @@
 import 'package:easy_contacts/app/locator.dart';
 import 'package:easy_contacts/models/contact.dart';
-import 'package:easy_contacts/utils/toast.dart';
+import 'package:easy_contacts/utils/validation.dart';
 import 'package:easy_contacts/view_models/contacts.viewmodel.dart';
 import 'package:stacked/stacked.dart';
 
 class ContactAddEditViewModel extends BaseViewModel {
   late Contact contact;
   bool isUpdate = false;
+  final ContactsViewModel contactsViewModel = locator<ContactsViewModel>();
 
   ContactAddEditViewModel({Contact? contact}) {
     isUpdate = contact != null;
@@ -31,25 +32,14 @@ class ContactAddEditViewModel extends BaseViewModel {
   void setNote(String note) => contact.note = note;
 
   Contact? saveContact() {
-    if (_validateForm()) {
+    if (ValidationUtils.validateContact(contact)) {
       if (isUpdate) {
-        locator<ContactsViewModel>().updateContact(contact);
+        contactsViewModel.updateContact(contact);
       } else {
-        locator<ContactsViewModel>().newContact(contact);
+        contactsViewModel.newContact(contact);
       }
       return contact;
     }
     return null;
-  }
-
-  bool _validateForm() {
-    if (contact.firstName.isEmpty) {
-      ToastUtil.showError(message: "Please provide first name!");
-      return false;
-    } else if (contact.phoneNo.isEmpty) {
-      ToastUtil.showError(message: "Please provide phone number!");
-      return false;
-    }
-    return true;
   }
 }

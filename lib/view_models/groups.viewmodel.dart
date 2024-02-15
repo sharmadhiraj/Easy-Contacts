@@ -11,7 +11,7 @@ class GroupsViewModel extends ReactiveViewModel {
 
   GroupsViewModel({required this.selectedIds});
 
-  void toggleSelectedId(String groupId) {
+  void toggleSelectedGroupId(String groupId) {
     if (selectedIds.contains(groupId)) {
       selectedIds.remove(groupId);
     } else {
@@ -46,7 +46,7 @@ class GroupsViewModel extends ReactiveViewModel {
 
   void newGroup(Group group) {
     _groupsService.addItem(group);
-    toggleSelectedId(group.id);
+    toggleSelectedGroupId(group.id);
   }
 
   @override

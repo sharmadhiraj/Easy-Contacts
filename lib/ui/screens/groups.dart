@@ -61,7 +61,7 @@ class GroupsScreen extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: 96),
       itemBuilder: (context, index) => GroupListTile(
         group: groups[index],
-        onSelectGroup: (String id) => viewModel.toggleSelectedId(id),
+        onSelectGroup: (String id) => viewModel.toggleSelectedGroupId(id),
         selected: viewModel.isSelectedGroup(groups[index]),
       ),
       itemCount: groups.length,
