@@ -8,7 +8,7 @@ import 'package:go_router/go_router.dart';
 import 'package:stacked/stacked.dart';
 
 class AddEditContactWidget extends StatelessWidget {
-  const AddEditContactWidget({this.contact, Key? key}) : super(key: key);
+  const AddEditContactWidget({this.contact, super.key});
 
   final Contact? contact;
 

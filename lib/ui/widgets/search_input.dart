@@ -4,7 +4,7 @@ import 'package:easy_contacts/view_models/contacts.viewmodel.dart';
 import 'package:flutter/material.dart';
 
 class SearchInput extends StatefulWidget {
-  const SearchInput({Key? key}) : super(key: key);
+  const SearchInput({super.key});
 
   @override
   State<SearchInput> createState() => _SearchInputState();
@@ -31,7 +31,7 @@ class _SearchInputState extends State<SearchInput> {
         borderRadius: BorderRadius.circular(8.0),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.5),
+            color: Colors.grey.withValues(alpha: 0.5),
             spreadRadius: 2,
             blurRadius: 5,
             offset: const Offset(0, 2),

@@ -11,8 +11,8 @@ import 'package:stacked/stacked.dart';
 class GroupsScreen extends StatelessWidget {
   const GroupsScreen({
     required this.selectedIds,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   final List<String> selectedIds;
 
