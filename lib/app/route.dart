@@ -16,7 +16,7 @@ class AppRouter {
         name: AppRoute.contactDetail.name,
         path: AppRoute.contactDetail.path,
         builder: (context, state) => ContactDetailScreen(
-          id: state.extra! as String,
+          id: state.pathParameters["id"]!,
         ),
       ),
       GoRoute(
@@ -39,7 +39,7 @@ enum AppRoute {
   ),
   contactDetail(
     name: "contact_detail",
-    path: "/contact_detail",
+    path: "/contact/:id",
   ),
   groups(
     name: "groups",

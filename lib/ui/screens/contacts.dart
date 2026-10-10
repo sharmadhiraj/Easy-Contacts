@@ -6,6 +6,7 @@ import 'package:easy_contacts/ui/widgets/empty_list_label.dart';
 import 'package:easy_contacts/ui/widgets/search_input.dart';
 import 'package:easy_contacts/utils/constant.dart';
 import 'package:easy_contacts/view_models/contacts.viewmodel.dart';
+import 'package:easy_contacts/ui/widgets/content_width.dart';
 import 'package:flutter/material.dart';
 import 'package:stacked/stacked.dart';
 
@@ -16,7 +17,7 @@ class ContactsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: _buildAppBar(),
-      body: _buildBody(),
+      body: ContentWidth(child: _buildBody()),
       floatingActionButton: _buildFloatingActionButton(context),
     );
   }
@@ -25,11 +26,11 @@ class ContactsScreen extends StatelessWidget {
     return AppBar(title: const Text(Constant.appName));
   }
 
-  FloatingActionButton _buildFloatingActionButton(BuildContext context) {
-    return FloatingActionButton(
+  Widget _buildFloatingActionButton(BuildContext context) {
+    return FloatingActionButton.extended(
       onPressed: () => AddEditContactWidget.show(context: context),
-      backgroundColor: Constant.primaryColor,
-      child: const Icon(Icons.add),
+      icon: const Icon(Icons.add),
+      label: const Text("New contact"),
     );
   }
 
@@ -46,15 +47,17 @@ class ContactsScreen extends StatelessWidget {
 
   Widget _buildNoContacts() {
     return const EmptyListLabel(
-      message: "You currently have no contacts.\n"
-          "Tap the '+' button in the bottom corner to create a new contact.",
+      icon: Icons.contacts_outlined,
+      title: "No contacts yet",
+      message: "Tap \"New contact\" to add your first one.",
     );
   }
 
   Widget _buildNoResults() {
     return const EmptyListLabel(
-      message: "Your search returned no contacts.\n"
-          "Please try searching with a different name.",
+      icon: Icons.search_off,
+      title: "No results",
+      message: "Try searching with a different name.",
     );
   }
 
@@ -75,6 +78,7 @@ class ContactsScreen extends StatelessWidget {
       itemBuilder: (context, index) =>
           ContactListTile(contact: contacts[index]),
       itemCount: contacts.length,
+      padding: const EdgeInsets.only(bottom: 88),
     );
   }
 }

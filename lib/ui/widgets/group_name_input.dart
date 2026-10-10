@@ -17,19 +17,35 @@ class _GroupNameInputState extends State<GroupNameInput> {
   final TextEditingController textEditingController = TextEditingController();
 
   @override
+  void dispose() {
+    textEditingController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Card(
-      child: ListTile(
-        contentPadding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-        title: TextField(
-          controller: textEditingController,
-          decoration: const InputDecoration(labelText: "Create new group"),
-          onSubmitted: (groupName) => _saveGroup(),
-        ),
-        trailing: IconButton(
-          onPressed: _saveGroup,
-          icon: const Icon(Icons.save_outlined),
-        ),
+    return Center(
+      heightFactor: 1,
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 640),
+        child: SafeArea(child: _buildTile()),
+      ),
+    );
+  }
+
+  Widget _buildTile() {
+    return ListTile(
+      contentPadding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+      title: TextField(
+        controller: textEditingController,
+        textCapitalization: TextCapitalization.words,
+        decoration: const InputDecoration(labelText: "Create new group"),
+        onSubmitted: (groupName) => _saveGroup(),
+      ),
+      trailing: IconButton.filled(
+        tooltip: "Add group",
+        onPressed: _saveGroup,
+        icon: const Icon(Icons.add),
       ),
     );
   }

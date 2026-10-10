@@ -26,16 +26,13 @@ class DeleteContactConfirmationDialog extends StatelessWidget {
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: const Text(
-            "Cancel",
-            style: TextStyle(color: Colors.grey),
-          ),
+          child: const Text("Cancel"),
         ),
         TextButton(
           onPressed: () => ContactActions.deleteContact(context, contact),
-          child: const Text(
+          child: Text(
             "Delete",
-            style: TextStyle(color: Colors.red),
+            style: TextStyle(color: Theme.of(context).colorScheme.error),
           ),
         ),
       ],

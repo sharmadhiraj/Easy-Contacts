@@ -1,4 +1,3 @@
-import 'package:collection/collection.dart';
 import 'package:easy_contacts/app/locator.dart';
 import 'package:easy_contacts/models/group.dart';
 import 'package:easy_contacts/services/groups.service.dart';
@@ -25,9 +24,9 @@ class GroupsViewModel extends ReactiveViewModel {
   }
 
   bool groupAlreadyExists(String groupName) {
-    return _groupsService.items
-            .firstWhereOrNull((group) => group.name == groupName) !=
-        null;
+    return _groupsService.items.any(
+      (group) => group.name.toLowerCase() == groupName.toLowerCase(),
+    );
   }
 
   List<Group> getSelectedGroups() {
@@ -35,12 +34,21 @@ class GroupsViewModel extends ReactiveViewModel {
   }
 
   List<Group> getGroups() {
-    return _groupsService.items..sort((a, b) => a.name.compareTo(b.name));
+    return _groupsService.items.toList()
+      ..sort((a, b) => a.name.compareTo(b.name));
   }
 
   bool hasGroups() {
     return _groupsService.items.isNotEmpty;
   }
+
+  void removeGroup(String id) {
+    selectedIds.remove(id);
+    _groupsService.removeItem(id);
+    notifyListeners();
+  }
+
+  void restoreGroup(Group group) => _groupsService.addItem(group);
 
   void newGroup(Group group) {
     _groupsService.addItem(group);

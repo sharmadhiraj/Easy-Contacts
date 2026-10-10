@@ -1,6 +1,7 @@
+import 'package:easy_contacts/app/locator.dart';
 import 'package:easy_contacts/app/route.dart';
 import 'package:easy_contacts/models/contact.dart';
-import 'package:easy_contacts/utils/constant.dart';
+import 'package:easy_contacts/view_models/contacts.viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -11,39 +12,62 @@ class ContactListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: ListTile(
-        onTap: () => context.pushNamed(
-          AppRoute.contactDetail.name,
-          extra: contact.id,
-        ),
-        leading: CircleAvatar(
-          backgroundColor: Colors.black12,
-          child: Text(
-            contact.getAvatar(),
-            style: const TextStyle(
-              fontSize: 16,
-              color: Constant.primaryColor,
-              fontWeight: FontWeight.bold,
-            ),
+    final ColorScheme colors = Theme.of(context).colorScheme;
+    return Dismissible(
+      key: ValueKey(contact.id),
+      direction: DismissDirection.endToStart,
+      background: ColoredBox(
+        color: colors.errorContainer,
+        child: Align(
+          alignment: Alignment.centerRight,
+          child: Padding(
+            padding: const EdgeInsets.only(right: 24),
+            child: Icon(Icons.delete_outline, color: colors.onErrorContainer),
           ),
         ),
-        title: Text(
-          contact.getFullName(),
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-        ),
-        subtitle: Text(
-          contact.phoneNo,
-          style: const TextStyle(fontWeight: FontWeight.bold),
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-        ),
-        trailing: const Icon(
-          Icons.chevron_right_rounded,
-          color: Constant.primaryColor,
+      ),
+      onDismissed: (_) => _delete(context),
+      child: Semantics(
+        button: true,
+        label: "Open ${contact.getFullName()}",
+        child: ListTile(
+          onTap: () => context.pushNamed(
+            AppRoute.contactDetail.name,
+            pathParameters: {"id": contact.id},
+          ),
+          leading: CircleAvatar(
+            backgroundColor: colors.primaryContainer,
+            foregroundColor: colors.onPrimaryContainer,
+            child: Text(contact.getAvatar()),
+          ),
+          title: Text(
+            contact.getFullName(),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+          subtitle: Text(
+            contact.phoneNo,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
         ),
       ),
     );
+  }
+
+  void _delete(BuildContext context) {
+    final ContactsViewModel viewModel = locator<ContactsViewModel>();
+    ScaffoldMessenger.of(context)
+      ..clearSnackBars()
+      ..showSnackBar(
+        SnackBar(
+          content: Text("${contact.firstName} deleted"),
+          action: SnackBarAction(
+            label: "Undo",
+            onPressed: () => viewModel.restoreContact(contact),
+          ),
+        ),
+      );
+    viewModel.removeContact(contact.id);
   }
 }

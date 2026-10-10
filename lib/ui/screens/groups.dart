@@ -5,6 +5,7 @@ import 'package:easy_contacts/ui/widgets/group_name_input.dart';
 import 'package:easy_contacts/utils/common.dart';
 import 'package:easy_contacts/utils/toast.dart';
 import 'package:easy_contacts/view_models/groups.viewmodel.dart';
+import 'package:easy_contacts/ui/widgets/content_width.dart';
 import 'package:flutter/material.dart';
 import 'package:stacked/stacked.dart';
 
@@ -23,7 +24,7 @@ class GroupsScreen extends StatelessWidget {
       builder: (context, viewModel, _) {
         return Scaffold(
           appBar: _buildAppBar(context, viewModel.getSelectedGroups()),
-          body: _buildBody(viewModel),
+          body: ContentWidth(child: _buildBody(context, viewModel)),
           bottomSheet: GroupNameInput(
             onSaveGroup: (String groupName) => _saveGroup(viewModel, groupName),
           ),
@@ -37,6 +38,7 @@ class GroupsScreen extends StatelessWidget {
       title: const Text("Groups"),
       actions: [
         IconButton(
+          tooltip: "Done",
           onPressed: () => Navigator.of(context).pop(selectedGroups),
           icon: const Icon(Icons.done),
         ),
@@ -44,28 +46,51 @@ class GroupsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildBody(GroupsViewModel viewModel) {
-    return viewModel.hasGroups() ? _buildListView(viewModel) : _buildNoGroups();
+  Widget _buildBody(BuildContext context, GroupsViewModel viewModel) {
+    return viewModel.hasGroups()
+        ? _buildListView(context, viewModel)
+        : _buildNoGroups();
   }
 
   Widget _buildNoGroups() {
     return const EmptyListLabel(
-      message: "No groups have been created yet.\n"
-          "You can create a new group below.",
+      icon: Icons.folder_open_outlined,
+      title: "No groups yet",
+      message: "Create a new group below.",
     );
   }
 
-  Widget _buildListView(GroupsViewModel viewModel) {
+  Widget _buildListView(BuildContext context, GroupsViewModel viewModel) {
     final List<Group> groups = viewModel.getGroups();
     return ListView.builder(
       padding: const EdgeInsets.only(bottom: 96),
       itemBuilder: (context, index) => GroupListTile(
         group: groups[index],
-        onSelectGroup: (String id) => viewModel.toggleSelectedGroupId(id),
+        onSelectGroup: viewModel.toggleSelectedGroupId,
+        onDeleteGroup: (group) => _deleteGroup(context, viewModel, group),
         selected: viewModel.isSelectedGroup(groups[index]),
       ),
       itemCount: groups.length,
     );
+  }
+
+  void _deleteGroup(
+    BuildContext context,
+    GroupsViewModel viewModel,
+    Group group,
+  ) {
+    ScaffoldMessenger.of(context)
+      ..clearSnackBars()
+      ..showSnackBar(
+        SnackBar(
+          content: Text("${group.name} deleted"),
+          action: SnackBarAction(
+            label: "Undo",
+            onPressed: () => viewModel.restoreGroup(group),
+          ),
+        ),
+      );
+    viewModel.removeGroup(group.id);
   }
 
   bool _saveGroup(GroupsViewModel viewModel, String groupName) {

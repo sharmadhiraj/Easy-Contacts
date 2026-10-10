@@ -11,49 +11,43 @@ class SearchInput extends StatefulWidget {
 }
 
 class _SearchInputState extends State<SearchInput> {
-  final TextEditingController _textEditingController = TextEditingController();
-  String _searchQuery = "";
+  final TextEditingController _controller = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    _textEditingController.addListener(() {
-      setState(() => _searchQuery = _textEditingController.text);
-      locator<ContactsViewModel>().setSearchQuery(_searchQuery);
+    _controller.addListener(() {
+      setState(() {});
+      locator<ContactsViewModel>().setSearchQuery(_controller.text);
     });
   }
 
   @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(8),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withValues(alpha: 0.5),
-            spreadRadius: 2,
-            blurRadius: 5,
-            offset: const Offset(0, 2),
-          ),
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+      child: SearchBar(
+        controller: _controller,
+        hintText: "Search contacts",
+        elevation: const WidgetStatePropertyAll(0),
+        leading: const Icon(Icons.search),
+        trailing: [
+          if (_controller.text.isNotEmpty)
+            IconButton(
+              tooltip: "Clear search",
+              icon: const Icon(Icons.clear),
+              onPressed: () {
+                _controller.clear();
+                CommonUtil.hideKeypad();
+              },
+            ),
         ],
-      ),
-      margin: const EdgeInsets.all(8),
-      child: TextField(
-        controller: _textEditingController,
-        decoration: InputDecoration(
-          hintText: "Search with name ...",
-          border: InputBorder.none,
-          contentPadding: const EdgeInsets.all(16),
-          suffixIcon: IconButton(
-            icon: Icon(_searchQuery.isEmpty ? Icons.search : Icons.clear),
-            onPressed: () {
-              _textEditingController.clear();
-              CommonUtil.hideKeypad();
-            },
-          ),
-          hintStyle: const TextStyle(color: Colors.grey),
-        ),
       ),
     );
   }

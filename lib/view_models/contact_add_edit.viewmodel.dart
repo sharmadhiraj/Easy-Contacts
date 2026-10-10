@@ -11,7 +11,16 @@ class ContactAddEditViewModel extends BaseViewModel {
 
   ContactAddEditViewModel({Contact? contact}) {
     isUpdate = contact != null;
-    this.contact = contact ?? Contact.empty();
+    this.contact = contact?.copy() ?? Contact.empty();
+  }
+
+  bool hasChanges = false;
+
+  void markChanged() {
+    if (!hasChanges) {
+      hasChanges = true;
+      notifyListeners();
+    }
   }
 
   void setFirstName(String firstName) => contact.firstName = firstName;
@@ -32,7 +41,7 @@ class ContactAddEditViewModel extends BaseViewModel {
   void setNote(String note) => contact.note = note;
 
   Contact? saveContact() {
-    if (ValidationUtils.validateContact(contact)) {
+    if (ValidationUtils.isValidContact(contact)) {
       if (isUpdate) {
         contactsViewModel.updateContact(contact);
       } else {

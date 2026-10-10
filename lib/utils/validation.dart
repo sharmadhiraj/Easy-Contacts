@@ -1,23 +1,18 @@
 import 'package:easy_contacts/models/contact.dart';
-import 'package:easy_contacts/utils/toast.dart';
 
 class ValidationUtils {
-  static bool validateContact(Contact contact) {
-    if (!_isValidName(contact.firstName)) {
-      _showValidationError("Please provide first name!");
-      return false;
-    } else if (!_isValidPhoneNumber(contact.phoneNo)) {
-      _showValidationError("Please provide phone number!");
-      return false;
-    }
-    return true;
+  static String? validateFirstName(String? name) {
+    return _isBlank(name) ? "Please provide first name" : null;
   }
 
-  static bool _isValidName(String name) => name.trim().isNotEmpty;
-
-  static bool _isValidPhoneNumber(String phoneNo) => phoneNo.trim().isNotEmpty;
-
-  static void _showValidationError(String message) {
-    ToastUtil.showError(message: message);
+  static String? validatePhoneNumber(String? phoneNo) {
+    return _isBlank(phoneNo) ? "Please provide phone number" : null;
   }
+
+  static bool isValidContact(Contact contact) {
+    return validateFirstName(contact.firstName) == null &&
+        validatePhoneNumber(contact.phoneNo) == null;
+  }
+
+  static bool _isBlank(String? value) => value == null || value.trim().isEmpty;
 }

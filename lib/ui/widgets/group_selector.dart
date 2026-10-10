@@ -29,36 +29,19 @@ class _GroupSelectorState extends State<GroupSelector> {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: _selectGroups,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          const SizedBox(height: 16),
-          Text(
-            "Groups",
-            style: TextStyle(
-              color: Colors.black.withValues(alpha: 0.6),
-              fontSize: 13,
-            ),
+    return Semantics(
+      button: true,
+      label: "Select groups",
+      child: InkWell(
+        onTap: _selectGroups,
+        child: InputDecorator(
+          isEmpty: _selectedGroups.isEmpty,
+          decoration: const InputDecoration(
+            labelText: "Groups",
+            suffixIcon: Icon(Icons.chevron_right),
           ),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 4),
-            child: Text(
-              _selectedGroups.isEmpty
-                  ? "Tap to select groups"
-                  : CommonUtil.formatGroupNames(_selectedGroups),
-              style: TextStyle(
-                fontSize: 16,
-                color: _selectedGroups.isEmpty ? Colors.grey : Colors.black87,
-              ),
-            ),
-          ),
-          const Divider(
-            thickness: 2,
-            color: Colors.black26,
-          ),
-        ],
+          child: Text(CommonUtil.formatGroupNames(_selectedGroups)),
+        ),
       ),
     );
   }

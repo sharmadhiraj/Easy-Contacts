@@ -9,19 +9,16 @@ class ContactsViewModel extends ReactiveViewModel {
   String _searchQuery = "";
 
   List<Contact> getContacts() {
-    List<Contact> contacts = _contactsService.items;
-    if (_searchQuery.trim().isNotEmpty) {
-      contacts = contacts
-          .where(
-            (contact) => contact
-                .getFullName()
-                .toLowerCase()
-                .contains(_searchQuery.toLowerCase()),
-          )
-          .toList();
-    }
-    contacts.sort((a, b) => a.getFullName().compareTo(b.getFullName()));
-    return contacts;
+    final String query = _searchQuery.trim().toLowerCase();
+    return _contactsService.items
+        .where((contact) => contact.getFullName().toLowerCase().contains(query))
+        .toList()
+      ..sort(
+        (a, b) => a
+            .getFullName()
+            .toLowerCase()
+            .compareTo(b.getFullName().toLowerCase()),
+      );
   }
 
   void setSearchQuery(String searchQuery) {
@@ -34,6 +31,8 @@ class ContactsViewModel extends ReactiveViewModel {
   void newContact(Contact contact) {
     _contactsService.addItem(contact);
   }
+
+  void restoreContact(Contact contact) => _contactsService.addItem(contact);
 
   bool removeContact(String id) {
     return _contactsService.removeItem(id);

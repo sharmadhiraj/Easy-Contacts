@@ -10,9 +10,17 @@ class CommonUtil {
     return _uuid.v4();
   }
 
-  static Future<void> launchPhoneNumber(String phoneNumber) async {
+  static Future<void> launchPhoneNumber(String phoneNumber) =>
+      _launch(Uri(scheme: "tel", path: phoneNumber));
+
+  static Future<void> launchSms(String phoneNumber) =>
+      _launch(Uri(scheme: "sms", path: phoneNumber));
+
+  static Future<void> launchEmail(String email) =>
+      _launch(Uri(scheme: "mailto", path: email));
+
+  static Future<void> _launch(Uri uri) async {
     try {
-      final Uri uri = Uri.parse("tel:$phoneNumber");
       await launchUrl(uri);
     } catch (e) {
       debugPrint("Exception while launching url: $e");

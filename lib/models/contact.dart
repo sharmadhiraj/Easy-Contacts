@@ -27,12 +27,27 @@ class Contact extends BaseModel {
     required this.relationship,
   });
 
+  Contact copy() {
+    return Contact(
+      id: id,
+      firstName: firstName,
+      lastName: lastName,
+      phoneNo: phoneNo,
+      nickName: nickName,
+      email: email,
+      groups: List<String>.of(groups),
+      note: note,
+      relationship: relationship,
+    );
+  }
+
   String getFullName() {
     return "$firstName $lastName".trim();
   }
 
   String getAvatar() {
-    return firstName.isEmpty ? " " : firstName[0].toUpperCase();
+    final String name = getFullName();
+    return name.isEmpty ? "?" : name[0].toUpperCase();
   }
 
   List<Group> getGroups() {

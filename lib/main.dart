@@ -19,7 +19,8 @@ class EasyContactsApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp.router(
       title: Constant.appName,
-      theme: buildThemeData(),
+      theme: buildLightTheme(),
+      darkTheme: buildDarkTheme(),
       routerConfig: AppRouter().router,
     );
   }
