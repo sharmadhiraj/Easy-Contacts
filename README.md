@@ -5,6 +5,8 @@ reach them with one tap. All data stays on the device: no account, backend or Fi
 
 ## Demo
 
+**Try it in the browser: https://sharmadhiraj.github.io/Easy-Contacts/**
+
 ![Demo Gif](demo.gif)
 
 ## Features
@@ -34,9 +36,11 @@ flutter test
 
 ## Web deployment
 
+Live app: https://sharmadhiraj.github.io/Easy-Contacts/
+
 Every push to `main` builds the web app and publishes it to GitHub Pages
-(`.github/workflows/deploy-web.yml`). One-time setup: in the repository go to **Settings > Pages**
-and set **Source** to **GitHub Actions**.
+(`.github/workflows/deploy-web.yml`). For a fork, set **Settings > Pages > Source** to
+**GitHub Actions** once.
 
 ## Tech stack
 
