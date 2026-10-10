@@ -6,5 +6,8 @@ class ContactsService extends BaseService<Contact> {
   ContactsService() : super();
 
   @override
-  String getHiveKeyName() => Constant.contactsHiveKeyName;
+  String get boxName => Constant.contactsBoxName;
+
+  @override
+  String get legacyKey => "contacts";
 }

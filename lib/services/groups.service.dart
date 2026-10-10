@@ -11,5 +11,8 @@ class GroupsService extends BaseService<Group> {
   }
 
   @override
-  String getHiveKeyName() => Constant.groupsHiveKeyName;
+  String get boxName => Constant.groupsBoxName;
+
+  @override
+  String get legacyKey => "groups";
 }

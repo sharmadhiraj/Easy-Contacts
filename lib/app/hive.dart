@@ -8,5 +8,11 @@ Future<void> initHive() async {
   Hive
     ..registerAdapter(ContactAdapter())
     ..registerAdapter(GroupAdapter());
-  await Hive.openBox(Constant.hiveBoxName);
+  await openHiveBoxes();
+}
+
+Future<void> openHiveBoxes() async {
+  await Hive.openBox(Constant.legacyBoxName);
+  await Hive.openBox<Contact>(Constant.contactsBoxName);
+  await Hive.openBox<Group>(Constant.groupsBoxName);
 }
