@@ -31,7 +31,8 @@ class AddEditContactWidget extends StatelessWidget {
         return SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.all(20).copyWith(
-                bottom: MediaQuery.of(context).viewInsets.bottom + 24),
+              bottom: MediaQuery.of(context).viewInsets.bottom + 24,
+            ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               mainAxisSize: MainAxisSize.min,

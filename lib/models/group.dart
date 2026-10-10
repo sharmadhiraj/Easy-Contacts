@@ -24,7 +24,8 @@ class GroupAdapter extends TypeAdapter<Group> {
 
   @override
   void write(BinaryWriter writer, Group obj) {
-    writer.writeString(obj.id);
-    writer.writeString(obj.name);
+    writer
+      ..writeString(obj.id)
+      ..writeString(obj.name);
   }
 }

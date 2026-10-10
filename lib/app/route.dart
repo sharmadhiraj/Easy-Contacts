@@ -16,14 +16,14 @@ class AppRouter {
         name: AppRoute.contactDetail.name,
         path: AppRoute.contactDetail.path,
         builder: (context, state) => ContactDetailScreen(
-          id: state.extra as String,
+          id: state.extra! as String,
         ),
       ),
       GoRoute(
         name: AppRoute.groups.name,
         path: AppRoute.groups.path,
         builder: (context, state) => GroupsScreen(
-          selectedIds: state.extra as List<String>,
+          selectedIds: state.extra! as List<String>,
         ),
       ),
     ],

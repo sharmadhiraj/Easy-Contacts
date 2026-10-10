@@ -63,8 +63,8 @@ class _GroupSelectorState extends State<GroupSelector> {
     );
   }
 
-  void _selectGroups() async {
-    dynamic groups = await context.pushNamed(
+  Future<void> _selectGroups() async {
+    final dynamic groups = await context.pushNamed(
       AppRoute.groups.name,
       extra: _selectedGroups.map((e) => e.id).toList(),
     );

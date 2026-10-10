@@ -35,9 +35,7 @@ class GroupsViewModel extends ReactiveViewModel {
   }
 
   List<Group> getGroups() {
-    final List<Group> groups = _groupsService.items;
-    groups.sort((a, b) => a.name.compareTo(b.name));
-    return groups;
+    return _groupsService.items..sort((a, b) => a.name.compareTo(b.name));
   }
 
   bool hasGroups() {

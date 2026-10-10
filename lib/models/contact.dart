@@ -79,14 +79,15 @@ class ContactAdapter extends TypeAdapter<Contact> {
 
   @override
   void write(BinaryWriter writer, Contact obj) {
-    writer.writeString(obj.id);
-    writer.writeString(obj.firstName);
-    writer.writeString(obj.lastName);
-    writer.writeString(obj.phoneNo);
-    writer.writeString(obj.nickName);
-    writer.writeString(obj.email);
-    writer.writeList(obj.groups);
-    writer.writeString(obj.note);
-    writer.writeString(obj.relationship);
+    writer
+      ..writeString(obj.id)
+      ..writeString(obj.firstName)
+      ..writeString(obj.lastName)
+      ..writeString(obj.phoneNo)
+      ..writeString(obj.nickName)
+      ..writeString(obj.email)
+      ..writeList(obj.groups)
+      ..writeString(obj.note)
+      ..writeString(obj.relationship);
   }
 }

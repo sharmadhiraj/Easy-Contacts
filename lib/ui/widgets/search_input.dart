@@ -28,7 +28,7 @@ class _SearchInputState extends State<SearchInput> {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(8.0),
+        borderRadius: BorderRadius.circular(8),
         boxShadow: [
           BoxShadow(
             color: Colors.grey.withValues(alpha: 0.5),

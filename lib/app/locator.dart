@@ -6,7 +6,8 @@ import 'package:get_it/get_it.dart';
 final GetIt locator = GetIt.instance;
 
 void setupLocator() {
-  locator.registerLazySingleton(() => ContactsService());
-  locator.registerLazySingleton(() => ContactsViewModel());
-  locator.registerLazySingleton(() => GroupsService());
+  locator
+    ..registerLazySingleton(ContactsService.new)
+    ..registerLazySingleton(ContactsViewModel.new)
+    ..registerLazySingleton(GroupsService.new);
 }

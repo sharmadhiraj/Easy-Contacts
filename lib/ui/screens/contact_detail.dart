@@ -45,7 +45,9 @@ class ContactDetailScreen extends StatelessWidget {
       ),
       IconButton(
         onPressed: () => DeleteContactConfirmationDialog.show(
-            context: context, contact: contact),
+          context: context,
+          contact: contact,
+        ),
         icon: const Icon(Icons.delete_outline_rounded),
       ),
       IconButton(
@@ -95,7 +97,6 @@ class ContactDetailScreen extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(16, 24, 16, 4),
       child: Column(
         mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           _buildAvatar(contact),
           const SizedBox(height: 8),
@@ -113,7 +114,7 @@ class ContactDetailScreen extends StatelessWidget {
                 fontWeight: FontWeight.bold,
                 color: Colors.grey,
               ),
-            )
+            ),
         ],
       ),
     );

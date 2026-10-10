@@ -5,7 +5,8 @@ import 'package:hive_flutter/hive_flutter.dart';
 
 Future<void> initHive() async {
   await Hive.initFlutter();
-  Hive.registerAdapter(ContactAdapter());
-  Hive.registerAdapter(GroupAdapter());
+  Hive
+    ..registerAdapter(ContactAdapter())
+    ..registerAdapter(GroupAdapter());
   await Hive.openBox(Constant.hiveBoxName);
 }

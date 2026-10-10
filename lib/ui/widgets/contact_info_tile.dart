@@ -8,7 +8,8 @@ class ContactInfoTile extends StatelessWidget {
     super.key,
   });
 
-  final String label, value;
+  final String label;
+  final String value;
   final IconData icon;
 
   @override

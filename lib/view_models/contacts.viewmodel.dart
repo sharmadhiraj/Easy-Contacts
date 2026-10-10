@@ -12,10 +12,12 @@ class ContactsViewModel extends ReactiveViewModel {
     List<Contact> contacts = _contactsService.items;
     if (_searchQuery.trim().isNotEmpty) {
       contacts = contacts
-          .where((contact) => contact
-              .getFullName()
-              .toLowerCase()
-              .contains(_searchQuery.toLowerCase()))
+          .where(
+            (contact) => contact
+                .getFullName()
+                .toLowerCase()
+                .contains(_searchQuery.toLowerCase()),
+          )
           .toList();
     }
     contacts.sort((a, b) => a.getFullName().compareTo(b.getFullName()));

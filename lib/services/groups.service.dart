@@ -6,10 +6,8 @@ class GroupsService extends BaseService<Group> {
   GroupsService() : super();
 
   List<Group> getGroupByIds(List<String> ids) {
-    final List<Group> selectedGroups =
-        items.where((group) => ids.contains(group.id)).toList();
-    selectedGroups.sort((a, b) => a.name.compareTo(b.name));
-    return selectedGroups;
+    return items.where((group) => ids.contains(group.id)).toList()
+      ..sort((a, b) => a.name.compareTo(b.name));
   }
 
   @override

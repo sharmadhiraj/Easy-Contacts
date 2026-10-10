@@ -10,7 +10,7 @@ class CommonUtil {
     return _uuid.v4();
   }
 
-  static void launchPhoneNumber(String phoneNumber) async {
+  static Future<void> launchPhoneNumber(String phoneNumber) async {
     try {
       final Uri uri = Uri.parse("tel:$phoneNumber");
       await launchUrl(uri);

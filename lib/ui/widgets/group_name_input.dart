@@ -27,7 +27,7 @@ class _GroupNameInputState extends State<GroupNameInput> {
           onSubmitted: (groupName) => _saveGroup(),
         ),
         trailing: IconButton(
-          onPressed: () => _saveGroup(),
+          onPressed: _saveGroup,
           icon: const Icon(Icons.save_outlined),
         ),
       ),

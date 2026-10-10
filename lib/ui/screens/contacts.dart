@@ -35,7 +35,7 @@ class ContactsScreen extends StatelessWidget {
 
   Widget _buildBody() {
     return ViewModelBuilder<ContactsViewModel>.reactive(
-      viewModelBuilder: () => locator<ContactsViewModel>(),
+      viewModelBuilder: locator.call,
       builder: (context, model, _) {
         return model.hasContacts()
             ? _buildContactsWithSearch(model.getContacts())
@@ -65,7 +65,7 @@ class ContactsScreen extends StatelessWidget {
         Expanded(
           child:
               contacts.isEmpty ? _buildNoResults() : _buildListView(contacts),
-        )
+        ),
       ],
     );
   }
