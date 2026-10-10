@@ -1,0 +1,56 @@
+appId: com.sharmadhiraj.easy_contacts
+---
+- launchApp:
+    clearState: true
+- extendedWaitUntil:
+    visible: "No contacts yet"
+    timeout: 15000
+- tapOn: "New contact"
+- tapOn: "First Name"
+- inputText: "Emma"
+- tapOn: "Last Name"
+- inputText: "Watson"
+- tapOn: "Phone Number"
+- inputText: "0412345678"
+- tapOn: "Email"
+- inputText: "emma@example.com"
+- hideKeyboard
+- tapOn: ".*Groups.*"
+- tapOn: "Create new group"
+- inputText: "Friends"
+- tapOn: "Add group"
+- tapOn: "Done"
+- tapOn: "Save"
+- extendedWaitUntil:
+    visible: "Call"
+    timeout: 5000
+- back
+- tapOn: "New contact"
+- tapOn: "First Name"
+- inputText: "Liam"
+- tapOn: "Last Name"
+- inputText: "Carter"
+- tapOn: "Phone Number"
+- inputText: "0498765432"
+- hideKeyboard
+- tapOn: "Save"
+- extendedWaitUntil:
+    visible: "Call"
+    timeout: 5000
+- back
+- tapOn: "Search contacts"
+- inputText: "emm"
+- hideKeyboard
+- tapOn: "Clear search"
+- tapOn: ".*Emma Watson.*"
+- tapOn: "Edit"
+- tapOn: "Nick Name"
+- inputText: "Em"
+- hideKeyboard
+- tapOn: "Save"
+- back
+- swipe:
+    start: 90%, 31%
+    end: 10%, 31%
+    duration: 600
+- tapOn: "Undo"
