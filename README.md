@@ -1,41 +1,94 @@
 # Easy Contacts
 
-Easy Contacts is a simple Flutter application designed to help you manage your contacts
-effortlessly. It allows you to add, update, and delete contacts, as well as assign them to different
-groups for better organization.
+A simple, offline contact manager built with Flutter. Add contacts, organise them into groups, and
+reach them with one tap. All data stays on the device: no account, backend or Firebase setup needed.
 
 ## Demo
 
 ![Demo Gif](demo.gif)
 
-## Technologies Used
-
-- **Flutter/Dart:** The framework and language used for building the mobile app.
-- **Stacked (MVVM):** Follows the Model-View-ViewModel architecture pattern for better code
-  organization and separation of concerns.
-- **Hive:** A lightweight and fast NoSQL database used for storing contacts locally on the device.
-- **GoRouter:** A simple and flexible routing library used for navigation within the app.
-- **GetIt:** A simple and robust dependency injection (DI) container used for managing dependencies.
-
-## Setup
-
-To get started with Easy Contacts, ensure you have Flutter installed on your development machine.
-Then, clone the project repository and run it using your preferred Flutter development environment.
-
 ## Features
 
-1. **Add Contact:** Easily add new contacts with their relevant information.
-2. **List Contacts:** View a list of all your contacts with the ability to search for specific ones.
-3. **Update and Delete Contact:** Modify existing contact details or remove contacts as needed.
-4. **Group Management:** Assign contacts to different groups for better organization and
-   categorization.
-5. **Minimal UI:** The user interface is kept simple and intuitive for easy navigation and
-   interaction.
+- **Contacts:** add, edit and delete contacts (name, phone, email, nickname, relationship, note).
+- **Search:** find contacts by name; the list is always sorted alphabetically.
+- **Groups:** create groups, assign them to contacts, swipe to delete a group.
+- **Quick actions:** call, message or email a contact, and copy their phone number.
+- **Undo:** swipe a contact to delete it, with an Undo option.
+- **Light and dark themes:** Material 3, follows the system setting.
 
-## Possible Improvements
+## Getting started
 
-- **UI Enhancements:** Further improve the app's user interface for a more polished look and feel.
-- **Additional Tests:** Expand test coverage to ensure the reliability and stability of the app.
+Requires Flutter 3.27 or newer (Dart 3.6+).
 
-I am continuously working on improving Easy Contacts, and I welcome any suggestions or feedback
-you may have. Thank you for using Easy Contacts!
+```sh
+flutter pub get
+flutter run
+```
+
+Checks:
+
+```sh
+flutter analyze
+flutter test
+```
+
+## Web deployment
+
+Every push to `main` builds the web app and publishes it to GitHub Pages
+(`.github/workflows/deploy-web.yml`). One-time setup: in the repository go to **Settings > Pages**
+and set **Source** to **GitHub Actions**.
+
+## Tech stack
+
+| Concern                    | Package                                               |
+|----------------------------|-------------------------------------------------------|
+| Architecture (MVVM)        | [Stacked](https://pub.dev/packages/stacked)           |
+| Local storage              | [Hive](https://pub.dev/packages/hive)                 |
+| Navigation                 | [GoRouter](https://pub.dev/packages/go_router)        |
+| Dependency injection       | [GetIt](https://pub.dev/packages/get_it)              |
+| Launching call, SMS, email | [url_launcher](https://pub.dev/packages/url_launcher) |
+
+## How it fits together
+
+```
+View (ui/)  ->  ViewModel (view_models/)  ->  Service (services/)  ->  Hive
+```
+
+- **Views** only render state and forward user actions.
+- **ViewModels** hold UI logic (search, sorting, selection) and rebuild the view when a service
+  changes.
+- **Services** own the data. `BaseService<T>` stores one Hive entry per item (keyed by id) and
+  exposes a reactive list, so `ContactsService` and `GroupsService` are a few lines each.
+- **GetIt** (`app/locator.dart`) provides the services and the shared `ContactsViewModel`.
+
+```
+lib/
+  app/          app setup: Hive init, dependency injection, routes, theme
+  models/       Contact, Group and their Hive adapters
+  services/     BaseService, ContactsService, GroupsService, contact actions
+  view_models/  one ViewModel per screen or sheet
+  ui/           screens/ and reusable widgets/
+  utils/        constants, validation, toasts, helpers
+test/           unit tests (services, view models, utils) and widget tests
+```
+
+### Routes
+
+| Path           | Screen                                                  |
+|----------------|---------------------------------------------------------|
+| `/`            | Contacts list                                           |
+| `/contact/:id` | Contact detail                                          |
+| `/groups`      | Group picker (selected group ids are passed as `extra`) |
+
+Adding or editing a contact happens in a bottom sheet, not a route.
+
+### Storage
+
+Contacts and groups live in their own Hive boxes (`contact_items`, `group_items`). Data saved by
+older versions (one list per type in the `contacts` box) is migrated automatically on first launch.
+
+## Roadmap
+
+- Import from and export to the device contacts or a vCard file.
+- Favourites and a recently called list.
+- Localisation.
